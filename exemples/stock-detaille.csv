@@ -1,0 +1,6 @@
+nom,latin,famille,role,nature,force,dose_min,dose_max,facettes,tags,note,prudence
+Bergamote FCF,Citrus bergamia,Agrumes,tete,naturelle,2,3,15,agrumes:1 vert:0.3,,"Le zeste le plus élégant : amer, floral, immédiatement lumineux.",
+Baie de genévrier,Juniperus communis,Aromatique,tete,naturelle,3,0.3,3,aromatique:0.8 vert:0.5 epice_frais:0.4,,"Gin, résine froide, forêt sèche après la pluie.",
+Tagète,Tagetes minuta,Fruité,coeur,naturelle,5,0.02,0.3,fruite:0.8 vert:0.6 aromatique:0.5,rare,"Pomme verte écrasée et herbe froissée — insolent, à doser au centième.",Phototoxique — restriction IFRA sévère.
+Rose de mai (absolue),Rosa centifolia,Floral,coeur,naturelle,3,1,12,rose:1 miel:0.4 vert:0.3,allergene;couteux,"Chair de pétale, miel et cire — jamais remplaçable.",
+Vétiver Haïti,Chrysopogon zizanioides,Bois,fond,naturelle,4,1,10,bois_sec:0.8 mousse_terre:0.9 fume:0.3,,"Racine, terre humide et pamplemousse — noblesse rugueuse.",

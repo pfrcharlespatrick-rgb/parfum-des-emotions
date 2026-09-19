@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Parfum des émotions — de l'émotion à la formule</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="chapeau">
+    <h1>Le Parfum des émotions</h1>
+    <p>Le client raconte ce qu'il ressent ; le parfumeur reçoit une fiche de composition —
+       matières premières, pyramide olfactive et dosages indicatifs — pour commencer à travailler.</p>
+  </header>
+
+  <!-- 1. Récit -->
+  <section class="etape">
+    <h2><span class="numero">1</span>Racontez</h2>
+    <p class="aide">Un souvenir, un lieu, une personne, un moment que ce parfum devrait contenir.
+       Écrivez librement : les mots sont lus et traduits en matières.</p>
+    <textarea id="recit" placeholder="« Le chalet de mon grand-père en octobre. La pluie sur les feuilles, le feu qui prend mal, sa veste de laine… »"></textarea>
+    <div class="detections" id="detections"></div>
+
+    <div class="assistant">
+      <button type="button" class="action" id="lire-ia">Faire lire mon récit par l'assistant</button>
+      <button type="button" class="lien-discret" id="reglages-ia">Réglages de l'assistant</button>
+      <div id="etat-ia" class="etat-ia"></div>
+    </div>
+    <div id="proposition-ia"></div>
+  </section>
+
+  <!-- 2. Émotions -->
+  <section class="etape">
+    <h2><span class="numero">2</span>Choisissez vos émotions</h2>
+    <p class="aide">Deux à quatre suffisent. Les émotions déduites de votre récit sont déjà suggérées.</p>
+    <div class="grille-emotions" id="emotions"></div>
+  </section>
+
+  <!-- 3. Curseurs -->
+  <section class="etape">
+    <h2><span class="numero">3</span>Réglez la matière</h2>
+    <p class="aide">Aucune connaissance en parfumerie n'est nécessaire : suivez votre instinct.</p>
+    <div id="curseurs"></div>
+  </section>
+
+  <!-- 4. Contexte -->
+  <section class="etape">
+    <h2><span class="numero">4</span>Précisez l'usage</h2>
+    <p class="aide">Quand le portera-t-on, et qu'est-ce qui est hors de question ?</p>
+    <div class="contexte">
+      <div>
+        <label for="saison">Saison</label>
+        <select id="saison">
+          <option value="toutes">Toute l'année</option>
+          <option value="printemps">Printemps</option>
+          <option value="ete">Été</option>
+          <option value="automne">Automne</option>
+          <option value="hiver">Hiver</option>
+        </select>
+      </div>
+      <div>
+        <label for="moment">Moment</label>
+        <select id="moment">
+          <option value="indifferent">Indifférent</option>
+          <option value="jour">Le jour</option>
+          <option value="soir">Le soir</option>
+        </select>
+      </div>
+      <div>
+        <label for="concentration">Concentration souhaitée</label>
+        <select id="concentration">
+          <option value="edt">Eau de toilette</option>
+          <option value="edp" selected>Eau de parfum</option>
+          <option value="extrait">Extrait</option>
+        </select>
+      </div>
+    </div>
+    <div class="exclusions" id="exclusions"><span class="intro">À écarter :</span></div>
+  </section>
+
+  <!-- Résultat -->
+  <div class="fiche" id="fiche"></div>
+
+  <p class="pied">
+    Les pourcentages sont exprimés dans le concentré et donnés à titre indicatif : ils constituent un
+    point de départ de laboratoire, non une formule finie. La conformité IFRA, le contrôle des
+    allergènes et l'équilibre réel du mélange restent le travail et la responsabilité du parfumeur.
+  </p>
+
+  <p class="pied" style="border:none;padding-top:0;margin-top:-10px">
+    Parfumeur : <a href="./palette.html" style="color:var(--or)">ma palette</a> ·
+    <a href="./salon.html" style="color:var(--or)">séance en salon</a>
+  </p>
+
+</div>
+
+<script src="./donnees.js"></script>
+<script src="./stock.js"></script>
+<script src="./moteur.js"></script>
+<script src="./palette-locale.js"></script>
+<script src="./fiche.js"></script>
+<script src="./ia.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
