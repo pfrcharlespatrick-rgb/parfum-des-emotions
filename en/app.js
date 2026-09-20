@@ -345,8 +345,19 @@ function lienPartage() {
   const url = new URL(location.href);
   url.hash = 'd=' + encoderEtat(etat);
   history.replaceState(null, '', url);
-  return url.toString();
+  // the copied link imposes the page's language: the client reopens the sheet in theirs
+  const partage = new URL(url);
+  if (typeof Langue !== 'undefined') partage.searchParams.set('lang', Langue.courante);
+  return partage.toString();
 }
+
+/* Before switching language (FR | EN button), the form state is put into the
+   address, as for a share link: the reloaded page picks it up again. */
+window.avantChangementDeLangue = () => {
+  const url = new URL(location.href);
+  url.hash = 'd=' + encoderEtat(etat);
+  history.replaceState(null, '', url);
+};
 
 function lireLien() {
   const h = location.hash.replace(/^#/, '');

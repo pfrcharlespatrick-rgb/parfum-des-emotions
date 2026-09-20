@@ -586,6 +586,38 @@ function sceneFiche() {
 const nomMatiere = (id) => (palette().find((m) => m.id === id) || { nom: id }).nom;
 
 /* ------------------------------------------------------------------ */
+/* Language switch (FR | EN button): the current session survives it    */
+/* ------------------------------------------------------------------ */
+
+const CLE_REPRISE = 'parfum.salon.reprise';
+
+/* Before the page reloads in the other language: write the session at once,
+   and note which one to resume, at which step. */
+window.avantChangementDeLangue = () => {
+  sauvegarderMaintenant();
+  if (!seance.id) return;                       // nothing started: nothing to resume
+  try { sessionStorage.setItem(CLE_REPRISE, JSON.stringify({ id: seance.id, etape })); }
+  catch (e) { /* storage unavailable: the session stays in the sessions list */ }
+};
+
+function reprendreApresChangementDeLangue() {
+  let reprise = null;
+  try {
+    reprise = JSON.parse(sessionStorage.getItem(CLE_REPRISE) || 'null');
+    sessionStorage.removeItem(CLE_REPRISE);
+  } catch (e) { return; }
+  if (!reprise || !reprise.id) return;
+  const s = lireSeances().find((x) => x.id === reprise.id);
+  if (!s) return;
+  etat = Object.assign(structuredClone(ETAT_INITIAL), s.etat);
+  etat.curseurs = Object.assign({}, ETAT_INITIAL.curseurs, s.etat.curseurs || {});
+  seance = { id: s.id, nom: s.nom, date: s.date };
+  etape = Math.min(Math.max(Number(reprise.etape) || 0, 0), ETAPES.length - 1);
+  $('#nom-client').value = s.nom || '';
+  afficherHorodatage();
+}
+
+/* ------------------------------------------------------------------ */
 
 $('#precedent').addEventListener('click', () => aller(etape - 1));
 $('#suivant').addEventListener('click', () => aller(etape + 1));
@@ -598,4 +630,5 @@ addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'hidden') sauvegarderMaintenant();
 });
 
+reprendreApresChangementDeLangue();
 rendre();

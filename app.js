@@ -345,8 +345,19 @@ function lienPartage() {
   const url = new URL(location.href);
   url.hash = 'd=' + encoderEtat(etat);
   history.replaceState(null, '', url);
-  return url.toString();
+  // le lien copié impose la langue de la page : le client rouvre la fiche dans la sienne
+  const partage = new URL(url);
+  if (typeof Langue !== 'undefined') partage.searchParams.set('lang', Langue.courante);
+  return partage.toString();
 }
+
+/* Avant de passer dans l'autre langue (bouton FR | EN), l'état du formulaire est
+   mis dans l'adresse, comme pour un lien de partage : la page rechargée le retrouve. */
+window.avantChangementDeLangue = () => {
+  const url = new URL(location.href);
+  url.hash = 'd=' + encoderEtat(etat);
+  history.replaceState(null, '', url);
+};
 
 function lireLien() {
   const h = location.hash.replace(/^#/, '');
