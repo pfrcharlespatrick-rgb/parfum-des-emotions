@@ -1,23 +1,23 @@
-/* Règles communes à l'éditeur de palette (navigateur) et aux outils en ligne
-   de commande : rapprochement des noms, vérification, essais à blanc.
-   Écrit sans import ni export pour être chargé des deux côtés. */
+/* Rules shared by the palette editor (browser) and the command-line tools:
+   name matching, verification, dry runs. Written without import or export so
+   it can be loaded on both sides. English edition. */
 
 const NORMALISER = (s) => (s || '')
   .normalize('NFD').replace(/[̀-ͯ]/g, '')
   .toLowerCase()
-  .replace(/\([^)]*\)/g, ' ')            // « (absolue) », « (cœur) »
+  .replace(/\([^)]*\)/g, ' ')            // "(absolute)", "(heart fraction)"
   .replace(/[^a-z0-9]+/g, ' ')
   .trim();
 
 const IDENTIFIANT = (nom) => NORMALISER(nom).replace(/\s+/g, '_').slice(0, 40) || 'matiere';
 
-/* Retrouve dans une palette de référence la matière que désigne un nom libre.
-   « Bergamote FCF » → la bergamote décrite dans donnees.js. */
+/* Finds, in a reference palette, the material a free-form name designates.
+   "Bergamot FCF" → the bergamot described in donnees.js. */
 function rapprocherMatiere(nom, reference) {
   const n = NORMALISER(nom);
   if (!n) return null;
-  // « Framboise (frambinone) » doit se retrouver aussi bien sous « framboise »
-  // que sous « frambinone » : la parenthèse porte souvent le nom d'atelier.
+  // "Raspberry (frambinone)" must be found under "raspberry" as well as under
+  // "frambinone": the parenthesis often carries the workshop name.
   const entreParentheses = (s) => [...String(s || '').matchAll(/\(([^)]*)\)/g)]
     .map((x) => NORMALISER(x[1])).filter(Boolean);
   const cles = reference.map((m) => ({
@@ -34,8 +34,8 @@ function rapprocherMatiere(nom, reference) {
   return dedans ? dedans.m : null;
 }
 
-/* Les étiquettes d'atelier portent la dilution de travail : « Ionone alpha 10% ».
-   On la sépare du nom pour la garder comme information à part entière. */
+/* Workshop labels carry the working dilution: "Alpha-ionone 10%".
+   We separate it from the name to keep it as information in its own right. */
 function extraireDilution(nom) {
   const m = String(nom || '').match(/[\s(]*(\d{1,3}(?:[.,]\d+)?)\s*%\s*\)?\s*$/);
   if (!m) return { nom: String(nom || '').trim(), dilution: null };
@@ -44,12 +44,15 @@ function extraireDilution(nom) {
   return { nom: String(nom).slice(0, m.index).trim(), dilution: valeur };
 }
 
-/* Ébauche pour une matière que la référence ne connaît pas. */
+/* Family given to a material the reference does not know, in either edition. */
+const FAMILLES_A_CLASSER = ['UNCLASSIFIED', 'À CLASSER'];
+
+/* Draft for a material the reference does not know. */
 function ebaucheMatiere(nom) {
   return {
     id: IDENTIFIANT(nom),
     nom,
-    famille: 'À CLASSER',
+    famille: 'UNCLASSIFIED',
     role: 'coeur',
     nature: /synth|molecul|accord|iso |ambrox|hedion|calone|galaxolide/i.test(nom)
       ? 'synthese' : 'naturelle',
@@ -61,11 +64,11 @@ function ebaucheMatiere(nom) {
 }
 
 const ROLES_VALIDES = ['tete', 'coeur', 'fond'];
-const NOM_ROLE = { tete: 'tête', coeur: 'cœur', fond: 'fond' };
+const NOM_ROLE = { tete: 'top', coeur: 'heart', fond: 'base' };
 
-/* --- Vérification ---------------------------------------------------- */
-/* Retourne { erreurs, avertissements, stats }. Une erreur empêche la matière
-   d'être utilisable ; un avertissement mérite seulement un coup d'œil. */
+/* --- Verification ---------------------------------------------------- */
+/* Returns { erreurs, avertissements, stats }. An error prevents the material
+   from being usable; a warning only deserves a glance. */
 
 function verifierPalette(liste, facettesConnues) {
   const erreurs = [];
@@ -73,45 +76,45 @@ function verifierPalette(liste, facettesConnues) {
   const vus = new Set();
 
   liste.forEach((m, i) => {
-    const ou = m.nom || m.id || `matière n° ${i + 1}`;
+    const ou = m.nom || m.id || `material no. ${i + 1}`;
     const err = (t) => erreurs.push({ id: m.id, matiere: ou, texte: t });
     const avert = (t) => avertissements.push({ id: m.id, matiere: ou, texte: t });
 
-    if (!m.nom) err('nom manquant');
-    if (!m.id || !/^[a-z0-9_]+$/.test(m.id)) err('identifiant manquant ou non conforme');
-    else if (vus.has(m.id)) err(`identifiant en double : ${m.id}`);
+    if (!m.nom) err('name missing');
+    if (!m.id || !/^[a-z0-9_]+$/.test(m.id)) err('identifier missing or invalid');
+    else if (vus.has(m.id)) err(`duplicate identifier: ${m.id}`);
     vus.add(m.id);
 
-    if (!m.famille) err('famille manquante');
-    else if (['À CLASSER', 'UNCLASSIFIED'].includes(m.famille)) avert('famille encore à classer');
+    if (!m.famille) err('family missing');
+    else if (FAMILLES_A_CLASSER.includes(m.famille)) avert('family still to be classified');
 
-    if (!ROLES_VALIDES.includes(m.role)) err(`rôle « ${m.role} » inconnu`);
-    if (!['naturelle', 'synthese'].includes(m.nature)) err(`nature « ${m.nature} » inconnue`);
-    if (!(Number.isFinite(m.force) && m.force >= 1 && m.force <= 5)) err('force hors de 1 à 5');
+    if (!ROLES_VALIDES.includes(m.role)) err(`unknown role “${m.role}”`);
+    if (!['naturelle', 'synthese'].includes(m.nature)) err(`unknown nature “${m.nature}”`);
+    if (!(Number.isFinite(m.force) && m.force >= 1 && m.force <= 5)) err('strength outside 1 to 5');
 
-    if (!Array.isArray(m.dose) || m.dose.length !== 2) err('fourchette de dosage absente');
+    if (!Array.isArray(m.dose) || m.dose.length !== 2) err('dosage range missing');
     else {
       const [a, b] = m.dose;
-      if (!Number.isFinite(a) || !Number.isFinite(b)) err('dosage non numérique');
-      else if (a < 0 || b <= 0) err('dosage nul ou négatif');
-      else if (a > b) err(`dosage inversé : de ${a} à ${b} %`);
-      else if (b > 40) avert(`dose maximale de ${b} % — inhabituel, à vérifier`);
+      if (!Number.isFinite(a) || !Number.isFinite(b)) err('non-numeric dosage');
+      else if (a < 0 || b <= 0) err('zero or negative dosage');
+      else if (a > b) err(`inverted dosage: from ${a} to ${b}%`);
+      else if (b > 40) avert(`maximum dose of ${b}% — unusual, worth checking`);
     }
 
     const facettes = Object.entries(m.facettes || {});
-    if (!facettes.length) err('aucune facette : le moteur ne pourra jamais la choisir');
+    if (!facettes.length) err('no facets: the engine will never be able to pick it');
     facettes.forEach(([f, p]) => {
-      if (!facettesConnues[f]) err(`facette inconnue « ${f} »`);
-      else if (!(Number.isFinite(p) && p > 0 && p <= 1)) err(`poids de « ${f} » hors de 0 à 1`);
+      if (!facettesConnues[f]) err(`unknown facet “${f}”`);
+      else if (!(Number.isFinite(p) && p > 0 && p <= 1)) err(`weight of “${f}” outside 0 to 1`);
     });
 
     if (m.dilution != null && !(Number.isFinite(m.dilution) && m.dilution > 0 && m.dilution <= 100)) {
-      err('dilution hors de 0 à 100 % (laisser vide si la matière est pure)');
+      err('dilution outside 0 to 100% (leave empty if the material is pure)');
     }
-    if (!m.note) avert('pas de caractère — la fiche affichera une case vide');
+    if (!m.note) avert('no character line — the sheet will show an empty cell');
   });
 
-  /* La palette peut-elle porter une formule ? */
+  /* Can the palette carry a formula? */
   const stats = { roles: {}, plafond: 0, familles: 0 };
   ROLES_VALIDES.forEach((r) => {
     const groupe = liste.filter((m) => m.role === r);
@@ -122,39 +125,39 @@ function verifierPalette(liste, facettesConnues) {
 
     if (!liste.length) return;
     if (!groupe.length) {
-      erreurs.push({ matiere: NOM_ROLE[r], texte: `aucune matière de ${NOM_ROLE[r]} : pas de pyramide possible` });
+      erreurs.push({ matiere: NOM_ROLE[r], texte: `no ${NOM_ROLE[r]} material: no pyramid possible` });
     } else if (!porteurs) {
       avertissements.push({ matiere: NOM_ROLE[r],
-        texte: `aucune matière dosable au-dessus de 4 % : cet étage restera famélique` });
+        texte: `no material dosable above 4%: this tier will stay starved` });
     }
   });
 
   stats.familles = new Set(liste.map((m) => m.famille)).size;
   if (liste.length && stats.plafond < 100) {
     avertissements.push({ matiere: 'palette',
-      texte: `elle plafonne à ${stats.plafond.toFixed(0)} % : toute formule sera complétée au solvant` });
+      texte: `it tops out at ${stats.plafond.toFixed(0)}%: every formula will be topped up with solvent` });
   }
   if (liste.length && stats.familles < 4) {
     avertissements.push({ matiere: 'palette',
-      texte: 'moins de quatre familles : les compositions se ressembleront toutes' });
+      texte: 'fewer than four families: all compositions will look alike' });
   }
 
   return { erreurs, avertissements, stats };
 }
 
-/* --- Essais à blanc --------------------------------------------------- */
-/* Six demandes très différentes soumises au moteur : c'est la seule preuve
-   qu'une palette sait réellement composer. */
+/* --- Dry runs --------------------------------------------------------- */
+/* Six very different requests submitted to the engine: the only proof that
+   a palette can really compose. */
 
 const ESSAIS_TYPES = [
-  ['clair et frais', { emotions: ['joie', 'liberte'], saison: 'ete',
+  ['bright and fresh', { emotions: ['joie', 'liberte'], saison: 'ete',
     curseurs: { lumiere: .8, temperature: -.7 } }],
-  ['sombre et chaud', { emotions: ['mystere', 'desir'], moment: 'soir',
+  ['dark and warm', { emotions: ['mystere', 'desir'], moment: 'soir',
     curseurs: { lumiere: -.8, temperature: .7, presence: .6 } }],
-  ['tendre et poudré', { emotions: ['tendresse', 'nostalgie'], curseurs: { texture: .8 } }],
-  ['sans animal ni sucre', { emotions: ['force'], exclusions: ['animal', 'gourmand'] }],
-  ['tout naturel', { emotions: ['serenite'], exclusions: ['synthese'] }],
-  ['une seule émotion', { emotions: ['purete'] }]
+  ['tender and powdery', { emotions: ['tendresse', 'nostalgie'], curseurs: { texture: .8 } }],
+  ['no animalic, no sugar', { emotions: ['force'], exclusions: ['animal', 'gourmand'] }],
+  ['all natural', { emotions: ['serenite'], exclusions: ['synthese'] }],
+  ['a single emotion', { emotions: ['purete'] }]
 ];
 
 function essayerPalette(composerFn) {

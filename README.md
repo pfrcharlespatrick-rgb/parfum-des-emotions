@@ -13,6 +13,8 @@ Deux entrées :
 - **`salon.html`** — la même séance menée sur tablette pendant le rendez-vous, avec les touches
   à sentir et la mémoire des clients reçus.
 - **`palette.html`** — la palette du parfumeur : son stock, saisi dans l'application.
+- **`en/`** — la même application en anglais, pour la clientèle anglophone :
+  `https://<compte>.github.io/parfum-des-emotions/en/` (voir [Version anglaise](#version-anglaise)).
 
 | Fichier | Rôle |
 | --- | --- |
@@ -30,6 +32,7 @@ Deux entrées :
 | `salon.js`   | Interface salon : étapes, mouillettes, mémoire des séances |
 | `style.css` / `salon.css` | Mise en page écran, tablette et impression |
 | `serveur/`   | Fonction serverless qui garde la clé d'API côté maison |
+| `en/`        | L'édition anglaise : mêmes pages, mêmes règles, textes traduits |
 | `outils/`    | Vérification de la synchronisation moteur ↔ service |
 
 ## Comment ça marche
@@ -195,6 +198,33 @@ Les identifiants de facettes doivent exister dans `FACETTES` : c'est la seule co
 Si vous ajoutez une émotion, une facette ou un curseur, mettez à jour la liste correspondante dans
 `serveur/worker.js` (elle y est dupliquée pour que le navigateur ne puisse pas imposer son propre
 schéma au service). `node outils/verifier-schema.mjs` le vérifie et échoue si les deux divergent.
+
+## Version anglaise
+
+Le dossier [`en/`](en/) contient la même application en anglais — page client, séance en salon et
+palette — publiée à `https://<compte>.github.io/parfum-des-emotions/en/`. Chaque page française
+y mène (« English version » au bas de la page client, bouton **EN** dans la barre du salon et de la
+palette), et chaque page anglaise ramène en français.
+
+Ce que les deux éditions partagent, sans rien recopier :
+
+- les feuilles de style, `palette-locale.js` et `stock.js`, chargés depuis la racine ;
+- **les identifiants** — facettes, émotions, matières, étages (`tete`, `coeur`, `fond`), natures et
+  étiquettes sont les mêmes dans `en/donnees.js` et `donnees.js`. Seuls les noms affichés changent ;
+- **le stockage du navigateur** — la palette saisie dans « Ma palette », les séances du salon et
+  les réglages de l'assistant vivent sous les mêmes clés : une palette entrée en français sert
+  telle quelle à la séance en anglais, et une seule configuration de l'assistant suffit.
+
+Ce qui est traduit et donc dupliqué : `en/donnees.js` (noms, phrases, caractères, et un **lexique
+anglais** qui reconnaît les mots entiers — « tea » sans « team », « rain » sans « train »),
+`en/moteur.js` (même arithmétique, mise en mots anglaise), `en/fiche.js`, `en/ia.js`, `en/app.js`,
+`en/salon.js`, `en/palette.js` et `en/palette-outils.js`. Une correction dans le moteur ou dans les
+règles de vérification se reporte donc dans son jumeau de `en/`.
+`node outils/verifier-schema.mjs` vérifie que les deux éditions gardent les mêmes identifiants.
+
+L'assistant, quand il passe par le service de la maison, reçoit `langue: "en"` et répond au client
+en anglais ; le `worker.js` livré le sait déjà. L'export JSON de la fiche garde les mêmes clés
+dans les deux langues, avec un champ `langue` en plus côté anglais.
 
 ## Partage
 
