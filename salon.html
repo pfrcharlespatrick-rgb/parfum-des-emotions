@@ -5,22 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#f7f3ee">
-<title>Le Parfum des émotions — séance en salon</title>
+<title data-t="salon_titre">Le Parfum des émotions — séance en salon</title>
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="./salon.css">
+<script src="./langue.js"></script>
 </head>
 <body class="salon">
 
 <header class="barre-salon">
   <div class="client">
-    <input id="nom-client" type="text" placeholder="Nom du client" autocomplete="off">
+    <input id="nom-client" type="text" placeholder="Nom du client" data-t-placeholder="nom_client" autocomplete="off">
     <span id="horodatage"></span>
   </div>
   <div class="actions">
-    <a class="tactile discret" href="./en/salon.html" lang="en" title="English version">EN</a>
-    <a class="tactile discret" href="./palette.html">Palette</a>
-    <button type="button" class="tactile discret" id="seances">Séances</button>
-    <button type="button" class="tactile discret" id="nouvelle">Nouvelle</button>
+    <div class="langues" role="group" data-t-title="langue_groupe" title="Langue / Language">
+      <button type="button" data-langue="fr" lang="fr">FR</button>
+      <button type="button" data-langue="en" lang="en">EN</button>
+    </div>
+    <a class="tactile discret" href="./palette.html" data-t="salon_palette">Palette</a>
+    <button type="button" class="tactile discret" id="seances" data-t="salon_seances">Séances</button>
+    <button type="button" class="tactile discret" id="nouvelle" data-t="salon_nouvelle">Nouvelle</button>
   </div>
 </header>
 
@@ -29,19 +33,19 @@
 <main id="scene"></main>
 
 <footer class="pied-nav">
-  <button type="button" class="tactile" id="precedent">← Précédent</button>
+  <button type="button" class="tactile" id="precedent" data-t="salon_precedent">← Précédent</button>
   <span class="indication" id="indication"></span>
-  <button type="button" class="tactile pleine" id="suivant">Suivant →</button>
+  <button type="button" class="tactile pleine" id="suivant" data-t="salon_suivant">Suivant →</button>
 </footer>
 
 <div class="voile masque" id="voile"><div class="panneau" id="panneau"></div></div>
 
-<script src="./donnees.js"></script>
-<script src="./stock.js"></script>
-<script src="./moteur.js"></script>
-<script src="./palette-locale.js"></script>
-<script src="./fiche.js"></script>
-<script src="./ia.js"></script>
-<script src="./salon.js"></script>
+<script>
+  Langue.brancherBoutons();
+  Langue.charger([
+    ['textes.js', false], ['donnees.js', false], ['stock.js', true], ['moteur.js', false],
+    ['palette-locale.js', true], ['fiche.js', false], ['ia.js', false], ['salon.js', false]
+  ]);
+</script>
 </body>
 </html>

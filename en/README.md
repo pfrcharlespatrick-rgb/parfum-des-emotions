@@ -1,22 +1,32 @@
 # The Perfume of Emotions — English edition
 
-This folder is the English edition of *Le Parfum des émotions*: a standalone application in
+This folder holds the English edition of *Le Parfum des émotions*: a standalone application in
 which the client expresses what they feel, and the perfumer receives a composition sheet
 (raw materials, olfactory pyramid, indicative dosages).
 
 No dependency, no server, no API key: static files that work just as well by double-clicking
-`index.html` as published on GitHub Pages
-(`https://<account>.github.io/parfum-des-emotions/en/`).
+the pages as published on GitHub Pages.
 
-Three entry points:
+**One address, two languages.** The application opens at a single address,
+`https://<account>.github.io/parfum-des-emotions/`, in French or in English. The **FR | EN**
+button at the top of every page switches between the two without losing anything: the story and
+settings in progress on the client page, the session in progress in the salon, at the same step.
+The choice is remembered on the device; on a first visit, the page follows the browser's
+language. A link can impose the language — `…/parfum-des-emotions/?lang=en` —, and that is what
+“Copy the share link” does, so the client reopens the sheet in their own language.
+
+Three entry points, all at the root of the site:
 
 - **`index.html`** — the public page, which the client fills in themselves and shares by link.
 - **`salon.html`** — the same session led on a tablet during the appointment, with the blotters
   to smell and the memory of past clients.
 - **`palette.html`** — the perfumer's palette: their stock, entered in the application.
 
-Every page links to its French counterpart (“Version française” at the bottom of the client
-page, **FR** in the salon and palette bars), and every French page links back here.
+How it is built: the three pages are language-neutral shells. `../langue.js`, loaded first, reads
+the choice and then loads either the root files (French) or the files of this folder (English):
+`textes.js` — the fixed texts of the page —, `donnees.js`, `moteur.js`, `fiche.js`, `ia.js`, then
+`app.js`, `salon.js` or `palette.js` and `palette-outils.js`. The old `en/…html` addresses
+forward to the single address.
 
 ## How it works
 
@@ -141,8 +151,8 @@ English list, use “Paste my list” in this page instead.
   `langue` field on the English side.
 
 What is translated, and therefore duplicated: `donnees.js`, `moteur.js` (same arithmetic,
-English wording), `fiche.js`, `ia.js`, `app.js`, `salon.js`, `palette.js` and
-`palette-outils.js`. A fix in the engine or in the verification rules is mirrored in its twin.
+English wording), `fiche.js`, `ia.js`, `app.js`, `salon.js`, `palette.js`, `palette-outils.js`
+and `textes.js`. A fix in the engine or in the verification rules is mirrored in its twin.
 
 ## Sharing
 

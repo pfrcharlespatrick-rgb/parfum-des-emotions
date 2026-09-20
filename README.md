@@ -13,8 +13,9 @@ Deux entrées :
 - **`salon.html`** — la même séance menée sur tablette pendant le rendez-vous, avec les touches
   à sentir et la mémoire des clients reçus.
 - **`palette.html`** — la palette du parfumeur : son stock, saisi dans l'application.
-- **`en/`** — la même application en anglais, pour la clientèle anglophone :
-  `https://<compte>.github.io/parfum-des-emotions/en/` (voir [Version anglaise](#version-anglaise)).
+
+La même adresse sert en français et en anglais : le bouton **FR | EN**, en haut de chaque page,
+passe de l'une à l'autre (voir [Une seule adresse, deux langues](#une-seule-adresse-deux-langues)).
 
 | Fichier | Rôle |
 | --- | --- |
@@ -32,7 +33,8 @@ Deux entrées :
 | `salon.js`   | Interface salon : étapes, mouillettes, mémoire des séances |
 | `style.css` / `salon.css` | Mise en page écran, tablette et impression |
 | `serveur/`   | Fonction serverless qui garde la clé d'API côté maison |
-| `en/`        | L'édition anglaise : mêmes pages, mêmes règles, textes traduits |
+| `langue.js` · `textes.js` | Choix de la langue (bouton FR \| EN) et textes fixes des pages |
+| `en/`        | L'édition anglaise : mêmes fichiers, mêmes règles, textes traduits |
 | `outils/`    | Vérification de la synchronisation moteur ↔ service |
 
 ## Comment ça marche
@@ -199,12 +201,20 @@ Si vous ajoutez une émotion, une facette ou un curseur, mettez à jour la liste
 `serveur/worker.js` (elle y est dupliquée pour que le navigateur ne puisse pas imposer son propre
 schéma au service). `node outils/verifier-schema.mjs` le vérifie et échoue si les deux divergent.
 
-## Version anglaise
+## Une seule adresse, deux langues
 
-Le dossier [`en/`](en/) contient la même application en anglais — page client, séance en salon et
-palette — publiée à `https://<compte>.github.io/parfum-des-emotions/en/`. Chaque page française
-y mène (« English version » au bas de la page client, bouton **EN** dans la barre du salon et de la
-palette), et chaque page anglaise ramène en français.
+L'application s'ouvre à une seule adresse, `https://<compte>.github.io/parfum-des-emotions/`,
+en français ou en anglais. Le bouton **FR | EN**, en haut de chaque page, passe de l'une à l'autre
+sans rien perdre : le récit et les réglages en cours sur la page client, la séance en cours dans le
+salon, à la même étape. Le choix est retenu sur l'appareil ; à la première visite, la page suit la
+langue du navigateur. Un lien peut imposer la langue — `…/parfum-des-emotions/?lang=en` —, et
+c'est ce que fait « Copier le lien de partage » : le client rouvre la fiche dans sa langue.
+
+Comment c'est bâti : les trois pages (`index.html`, `salon.html`, `palette.html`) sont des
+coquilles sans langue. `langue.js`, chargé en premier, lit le choix puis charge soit les fichiers
+de la racine (français), soit ceux de [`en/`](en/) (anglais) : `textes.js` — les textes fixes de la
+page —, `donnees.js`, `moteur.js`, `fiche.js`, `ia.js`, puis `app.js`, `salon.js` ou `palette.js`
+et `palette-outils.js`. Les anciennes adresses `en/…html` redirigent vers l'adresse unique.
 
 Ce que les deux éditions partagent, sans rien recopier :
 
@@ -218,8 +228,8 @@ Ce que les deux éditions partagent, sans rien recopier :
 Ce qui est traduit et donc dupliqué : `en/donnees.js` (noms, phrases, caractères, et un **lexique
 anglais** qui reconnaît les mots entiers — « tea » sans « team », « rain » sans « train »),
 `en/moteur.js` (même arithmétique, mise en mots anglaise), `en/fiche.js`, `en/ia.js`, `en/app.js`,
-`en/salon.js`, `en/palette.js` et `en/palette-outils.js`. Une correction dans le moteur ou dans les
-règles de vérification se reporte donc dans son jumeau de `en/`.
+`en/salon.js`, `en/palette.js`, `en/palette-outils.js` et `en/textes.js`. Une correction dans le
+moteur ou dans les règles de vérification se reporte donc dans son jumeau de `en/`.
 `node outils/verifier-schema.mjs` vérifie que les deux éditions gardent les mêmes identifiants.
 
 L'assistant, quand il passe par le service de la maison, reçoit `langue: "en"` et répond au client

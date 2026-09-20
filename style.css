@@ -229,3 +229,28 @@ table.formule td.chiffre { text-align: right; font-variant-numeric: tabular-nums
   .fiche { margin-top: 0; }
   .etage, table.formule { break-inside: avoid; }
 }
+
+/* --- choix de la langue (bouton FR | EN, une seule adresse) --- */
+
+.chapeau-haut { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.langues {
+  display: inline-flex; flex-shrink: 0; margin-top: 8px;
+  border: 1px solid var(--ligne); border-radius: 20px; overflow: hidden; background: #fff;
+  font-family: system-ui, sans-serif;
+}
+.langues button {
+  border: none; background: transparent; color: var(--encre-doux);
+  font: inherit; font-size: 13px; letter-spacing: .04em;
+  padding: 7px 13px; min-height: 32px; cursor: pointer;
+}
+.langues button + button { border-left: 1px solid var(--ligne); }
+.langues button:hover:not([aria-pressed="true"]) { background: var(--or-clair); color: #7d5626; }
+.langues button[aria-pressed="true"] { background: var(--or); color: #fff; cursor: default; }
+.barre-salon .actions { align-items: center; }
+.barre-salon .langues { margin-top: 0; }
+.barre-salon .langues button { padding: 11px 14px; min-height: 44px; font-size: 14px; }
+
+/* en anglais, la page attend ses textes traduits avant de s'afficher (voir langue.js) */
+.langue-en-attente body { visibility: hidden; }
+
+@media print { .langues { display: none !important; } }

@@ -3,29 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Le Parfum des émotions — de l'émotion à la formule</title>
+<title data-t="index_titre">Le Parfum des émotions — de l'émotion à la formule</title>
 <link rel="stylesheet" href="./style.css">
+<script src="./langue.js"></script>
 </head>
 <body>
 <div class="page">
 
   <header class="chapeau">
-    <h1>Le Parfum des émotions</h1>
-    <p>Le client raconte ce qu'il ressent ; le parfumeur reçoit une fiche de composition —
+    <div class="chapeau-haut">
+      <h1 data-t="titre">Le Parfum des émotions</h1>
+      <div class="langues" role="group" data-t-title="langue_groupe" title="Langue / Language">
+        <button type="button" data-langue="fr" lang="fr">FR</button>
+        <button type="button" data-langue="en" lang="en">EN</button>
+      </div>
+    </div>
+    <p data-t="chapeau">Le client raconte ce qu'il ressent ; le parfumeur reçoit une fiche de composition —
        matières premières, pyramide olfactive et dosages indicatifs — pour commencer à travailler.</p>
   </header>
 
   <!-- 1. Récit -->
   <section class="etape">
-    <h2><span class="numero">1</span>Racontez</h2>
-    <p class="aide">Un souvenir, un lieu, une personne, un moment que ce parfum devrait contenir.
+    <h2><span class="numero">1</span><span data-t="e1_titre">Racontez</span></h2>
+    <p class="aide" data-t="e1_aide">Un souvenir, un lieu, une personne, un moment que ce parfum devrait contenir.
        Écrivez librement : les mots sont lus et traduits en matières.</p>
-    <textarea id="recit" placeholder="« Le chalet de mon grand-père en octobre. La pluie sur les feuilles, le feu qui prend mal, sa veste de laine… »"></textarea>
+    <textarea id="recit" data-t-placeholder="recit_placeholder" placeholder="« Le chalet de mon grand-père en octobre. La pluie sur les feuilles, le feu qui prend mal, sa veste de laine… »"></textarea>
     <div class="detections" id="detections"></div>
 
     <div class="assistant">
-      <button type="button" class="action" id="lire-ia">Faire lire mon récit par l'assistant</button>
-      <button type="button" class="lien-discret" id="reglages-ia">Réglages de l'assistant</button>
+      <button type="button" class="action" id="lire-ia" data-t="lire_ia">Faire lire mon récit par l'assistant</button>
+      <button type="button" class="lien-discret" id="reglages-ia" data-t="reglages_ia">Réglages de l'assistant</button>
       <div id="etat-ia" class="etat-ia"></div>
     </div>
     <div id="proposition-ia"></div>
@@ -33,76 +40,78 @@
 
   <!-- 2. Émotions -->
   <section class="etape">
-    <h2><span class="numero">2</span>Choisissez vos émotions</h2>
-    <p class="aide">Deux à quatre suffisent. Les émotions déduites de votre récit sont déjà suggérées.</p>
+    <h2><span class="numero">2</span><span data-t="e2_titre">Choisissez vos émotions</span></h2>
+    <p class="aide" data-t="e2_aide">Deux à quatre suffisent. Les émotions déduites de votre récit sont déjà suggérées.</p>
     <div class="grille-emotions" id="emotions"></div>
   </section>
 
   <!-- 3. Curseurs -->
   <section class="etape">
-    <h2><span class="numero">3</span>Réglez la matière</h2>
-    <p class="aide">Aucune connaissance en parfumerie n'est nécessaire : suivez votre instinct.</p>
+    <h2><span class="numero">3</span><span data-t="e3_titre">Réglez la matière</span></h2>
+    <p class="aide" data-t="e3_aide">Aucune connaissance en parfumerie n'est nécessaire : suivez votre instinct.</p>
     <div id="curseurs"></div>
   </section>
 
   <!-- 4. Contexte -->
   <section class="etape">
-    <h2><span class="numero">4</span>Précisez l'usage</h2>
-    <p class="aide">Quand le portera-t-on, et qu'est-ce qui est hors de question ?</p>
+    <h2><span class="numero">4</span><span data-t="e4_titre">Précisez l'usage</span></h2>
+    <p class="aide" data-t="e4_aide">Quand le portera-t-on, et qu'est-ce qui est hors de question ?</p>
     <div class="contexte">
       <div>
-        <label for="saison">Saison</label>
+        <label for="saison" data-t="saison">Saison</label>
         <select id="saison">
-          <option value="toutes">Toute l'année</option>
-          <option value="printemps">Printemps</option>
-          <option value="ete">Été</option>
-          <option value="automne">Automne</option>
-          <option value="hiver">Hiver</option>
+          <option value="toutes" data-t="saison_toutes">Toute l'année</option>
+          <option value="printemps" data-t="saison_printemps">Printemps</option>
+          <option value="ete" data-t="saison_ete">Été</option>
+          <option value="automne" data-t="saison_automne">Automne</option>
+          <option value="hiver" data-t="saison_hiver">Hiver</option>
         </select>
       </div>
       <div>
-        <label for="moment">Moment</label>
+        <label for="moment" data-t="moment">Moment</label>
         <select id="moment">
-          <option value="indifferent">Indifférent</option>
-          <option value="jour">Le jour</option>
-          <option value="soir">Le soir</option>
+          <option value="indifferent" data-t="moment_indifferent">Indifférent</option>
+          <option value="jour" data-t="moment_jour">Le jour</option>
+          <option value="soir" data-t="moment_soir">Le soir</option>
         </select>
       </div>
       <div>
-        <label for="concentration">Concentration souhaitée</label>
+        <label for="concentration" data-t="concentration">Concentration souhaitée</label>
         <select id="concentration">
-          <option value="edt">Eau de toilette</option>
-          <option value="edp" selected>Eau de parfum</option>
-          <option value="extrait">Extrait</option>
+          <option value="edt" data-t="conc_edt">Eau de toilette</option>
+          <option value="edp" selected data-t="conc_edp">Eau de parfum</option>
+          <option value="extrait" data-t="conc_extrait">Extrait</option>
         </select>
       </div>
     </div>
-    <div class="exclusions" id="exclusions"><span class="intro">À écarter :</span></div>
+    <div class="exclusions" id="exclusions"><span class="intro" data-t="exclusions_intro">À écarter :</span></div>
   </section>
 
   <!-- Résultat -->
   <div class="fiche" id="fiche"></div>
 
-  <p class="pied">
+  <p class="pied" data-t="pied">
     Les pourcentages sont exprimés dans le concentré et donnés à titre indicatif : ils constituent un
     point de départ de laboratoire, non une formule finie. La conformité IFRA, le contrôle des
     allergènes et l'équilibre réel du mélange restent le travail et la responsabilité du parfumeur.
   </p>
 
   <p class="pied" style="border:none;padding-top:0;margin-top:-10px">
-    Parfumeur : <a href="./palette.html" style="color:var(--or)">ma palette</a> ·
-    <a href="./salon.html" style="color:var(--or)">séance en salon</a> ·
-    <a href="./en/" style="color:var(--or)" lang="en">English version</a>
+    <span data-t="pied_parfumeur">Parfumeur :</span>
+    <a href="./palette.html" style="color:var(--or)" data-t="pied_palette">ma palette</a> ·
+    <a href="./salon.html" style="color:var(--or)" data-t="pied_salon">séance en salon</a>
   </p>
 
 </div>
 
-<script src="./donnees.js"></script>
-<script src="./stock.js"></script>
-<script src="./moteur.js"></script>
-<script src="./palette-locale.js"></script>
-<script src="./fiche.js"></script>
-<script src="./ia.js"></script>
-<script src="./app.js"></script>
+<script>
+  /* La langue choisie décide des fichiers chargés : ceux de la racine (français)
+     ou ceux de en/ (anglais). « true » marque les fichiers communs aux deux. */
+  Langue.brancherBoutons();
+  Langue.charger([
+    ['textes.js', false], ['donnees.js', false], ['stock.js', true], ['moteur.js', false],
+    ['palette-locale.js', true], ['fiche.js', false], ['ia.js', false], ['app.js', false]
+  ]);
+</script>
 </body>
 </html>

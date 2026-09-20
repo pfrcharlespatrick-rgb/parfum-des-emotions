@@ -3,22 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Ma palette — Le Parfum des émotions</title>
+<title data-t="palette_titre">Ma palette — Le Parfum des émotions</title>
 <link rel="stylesheet" href="./style.css">
 <link rel="stylesheet" href="./salon.css">
 <link rel="stylesheet" href="./palette.css">
+<script src="./langue.js"></script>
 </head>
 <body class="salon palette">
 
 <header class="barre-salon">
   <div class="client">
-    <strong style="font-size:19px">Ma palette</strong>
+    <strong style="font-size:19px" data-t="ma_palette">Ma palette</strong>
     <span id="resume-palette"></span>
   </div>
   <div class="actions">
-    <a class="tactile discret" href="./en/palette.html" lang="en" title="English version">EN</a>
-    <a class="tactile discret" href="./salon.html">Séance</a>
-    <a class="tactile discret" href="./index.html">Page client</a>
+    <div class="langues" role="group" data-t-title="langue_groupe" title="Langue / Language">
+      <button type="button" data-langue="fr" lang="fr">FR</button>
+      <button type="button" data-langue="en" lang="en">EN</button>
+    </div>
+    <a class="tactile discret" href="./salon.html" data-t="palette_seance">Séance</a>
+    <a class="tactile discret" href="./index.html" data-t="palette_client">Page client</a>
   </div>
 </header>
 
@@ -26,18 +30,18 @@
   <p class="consigne" id="explication"></p>
 
   <div class="bandeau-outils" id="commandes">
-    <button type="button" class="tactile pleine" id="ajouter">+ Ajouter une matière</button>
-    <button type="button" class="tactile" id="depuis-liste">Coller ma liste</button>
-    <button type="button" class="tactile" id="partir-demo">Partir de la palette de démonstration</button>
-    <button type="button" class="tactile" id="exporter">Sauvegarder / exporter</button>
-    <button type="button" class="tactile" id="importer">Restaurer une sauvegarde</button>
-    <button type="button" class="tactile" id="vider">Tout effacer</button>
+    <button type="button" class="tactile pleine" id="ajouter" data-t="ajouter">+ Ajouter une matière</button>
+    <button type="button" class="tactile" id="depuis-liste" data-t="depuis_liste">Coller ma liste</button>
+    <button type="button" class="tactile" id="partir-demo" data-t="partir_demo">Partir de la palette de démonstration</button>
+    <button type="button" class="tactile" id="exporter" data-t="exporter">Sauvegarder / exporter</button>
+    <button type="button" class="tactile" id="importer" data-t="importer">Restaurer une sauvegarde</button>
+    <button type="button" class="tactile" id="vider" data-t="vider">Tout effacer</button>
   </div>
 
   <div id="bilan"></div>
 
   <div class="filtres" id="filtres">
-    <input type="search" id="recherche" placeholder="Chercher une matière…" autocomplete="off">
+    <input type="search" id="recherche" placeholder="Chercher une matière…" data-t-placeholder="recherche" autocomplete="off">
     <div class="chips" id="filtre-role"></div>
   </div>
 
@@ -46,11 +50,12 @@
 
 <div class="voile masque" id="voile"><div class="panneau" id="panneau"></div></div>
 
-<script src="./donnees.js"></script>
-<script src="./stock.js"></script>
-<script src="./moteur.js"></script>
-<script src="./palette-locale.js"></script>
-<script src="./palette-outils.js"></script>
-<script src="./palette.js"></script>
+<script>
+  Langue.brancherBoutons();
+  Langue.charger([
+    ['textes.js', false], ['donnees.js', false], ['stock.js', true], ['moteur.js', false],
+    ['palette-locale.js', true], ['palette-outils.js', false], ['palette.js', false]
+  ]);
+</script>
 </body>
 </html>
