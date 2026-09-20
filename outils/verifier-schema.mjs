@@ -14,7 +14,14 @@ const racine = path.join(ici, '..');
 
 const donnees = new Function(
   fs.readFileSync(path.join(racine, 'donnees.js'), 'utf8') +
-  '\nreturn { EMOTIONS, FACETTES, CURSEURS };'
+  '\nreturn { EMOTIONS, FACETTES, CURSEURS, MATIERES };'
+)();
+
+/* L'édition anglaise (en/donnees.js) partage ses identifiants avec la française :
+   une palette saisie dans une langue doit rester lisible dans l'autre. */
+const anglais = new Function(
+  fs.readFileSync(path.join(racine, 'en', 'donnees.js'), 'utf8') +
+  '\nreturn { EMOTIONS, FACETTES, CURSEURS, MATIERES };'
 )();
 
 const worker = fs.readFileSync(path.join(racine, 'serveur', 'worker.js'), 'utf8');
@@ -47,6 +54,19 @@ const ok = [
 
 if (!ok) {
   console.error('\nMettre à jour serveur/worker.js pour refléter donnees.js.');
+  process.exit(1);
+}
+
+console.log('\nÉdition française ↔ édition anglaise (en/donnees.js) :');
+const okAnglais = [
+  comparer('Émotions', donnees.EMOTIONS.map((e) => e.id), anglais.EMOTIONS.map((e) => e.id)),
+  comparer('Facettes', Object.keys(donnees.FACETTES), Object.keys(anglais.FACETTES)),
+  comparer('Curseurs', donnees.CURSEURS.map((c) => c.id), anglais.CURSEURS.map((c) => c.id)),
+  comparer('Matières', donnees.MATIERES.map((m) => m.id), anglais.MATIERES.map((m) => m.id))
+].every(Boolean);
+
+if (!okAnglais) {
+  console.error('\nMettre à jour en/donnees.js pour refléter donnees.js (mêmes identifiants).');
   process.exit(1);
 }
 console.log('Tout concorde.');

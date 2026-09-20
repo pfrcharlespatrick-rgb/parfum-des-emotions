@@ -28,7 +28,9 @@ Reportez-la dans l'application : **Réglages de l'assistant → Service de la ma
 
 ## Contrat
 
-`POST /` avec `{"recit": "…"}` renvoie exactement l'objet attendu par l'application :
+`POST /` avec `{"recit": "…"}` renvoie exactement l'objet attendu par l'application. Un champ
+facultatif `"langue": "en"` fait écrire le résumé en anglais — c'est ce qu'envoie la version
+anglaise du site (`en/`) ; sans lui, le service répond en français :
 
 ```json
 {

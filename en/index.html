@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Perfume of Emotions — from emotion to formula</title>
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="chapeau">
+    <h1>The Perfume of Emotions</h1>
+    <p>The client describes what they feel; the perfumer receives a composition sheet —
+       raw materials, olfactory pyramid and indicative dosages — to start working from.</p>
+  </header>
+
+  <!-- 1. Story -->
+  <section class="etape">
+    <h2><span class="numero">1</span>Tell us</h2>
+    <p class="aide">A memory, a place, a person, a moment this perfume should hold.
+       Write freely: the words are read and translated into materials.</p>
+    <textarea id="recit" placeholder="“My grandfather’s cabin in October. Rain on the leaves, a fire that won’t catch, his wool jacket…”"></textarea>
+    <div class="detections" id="detections"></div>
+
+    <div class="assistant">
+      <button type="button" class="action" id="lire-ia">Have the assistant read my story</button>
+      <button type="button" class="lien-discret" id="reglages-ia">Assistant settings</button>
+      <div id="etat-ia" class="etat-ia"></div>
+    </div>
+    <div id="proposition-ia"></div>
+  </section>
+
+  <!-- 2. Emotions -->
+  <section class="etape">
+    <h2><span class="numero">2</span>Choose your emotions</h2>
+    <p class="aide">Two to four are enough. The emotions inferred from your story are already suggested.</p>
+    <div class="grille-emotions" id="emotions"></div>
+  </section>
+
+  <!-- 3. Sliders -->
+  <section class="etape">
+    <h2><span class="numero">3</span>Set the material</h2>
+    <p class="aide">No knowledge of perfumery is needed: follow your instinct.</p>
+    <div id="curseurs"></div>
+  </section>
+
+  <!-- 4. Context -->
+  <section class="etape">
+    <h2><span class="numero">4</span>Specify the use</h2>
+    <p class="aide">When will it be worn, and what is out of the question?</p>
+    <div class="contexte">
+      <div>
+        <label for="saison">Season</label>
+        <select id="saison">
+          <option value="toutes">All year round</option>
+          <option value="printemps">Spring</option>
+          <option value="ete">Summer</option>
+          <option value="automne">Autumn</option>
+          <option value="hiver">Winter</option>
+        </select>
+      </div>
+      <div>
+        <label for="moment">Time of day</label>
+        <select id="moment">
+          <option value="indifferent">No preference</option>
+          <option value="jour">Daytime</option>
+          <option value="soir">Evening</option>
+        </select>
+      </div>
+      <div>
+        <label for="concentration">Desired concentration</label>
+        <select id="concentration">
+          <option value="edt">Eau de toilette</option>
+          <option value="edp" selected>Eau de parfum</option>
+          <option value="extrait">Extrait</option>
+        </select>
+      </div>
+    </div>
+    <div class="exclusions" id="exclusions"><span class="intro">To set aside:</span></div>
+  </section>
+
+  <!-- Result -->
+  <div class="fiche" id="fiche"></div>
+
+  <p class="pied">
+    Percentages are expressed within the concentrate and given as guidance only: they are a
+    laboratory starting point, not a finished formula. IFRA compliance, allergen control and the
+    actual balance of the blend remain the perfumer's work and responsibility.
+  </p>
+
+  <p class="pied" style="border:none;padding-top:0;margin-top:-10px">
+    Perfumer: <a href="./palette.html" style="color:var(--or)">my palette</a> ·
+    <a href="./salon.html" style="color:var(--or)">salon session</a> ·
+    <a href="../" style="color:var(--or)" lang="fr">Version française</a>
+  </p>
+
+</div>
+
+<script src="./donnees.js"></script>
+<script src="../stock.js"></script>
+<script src="./moteur.js"></script>
+<script src="../palette-locale.js"></script>
+<script src="./fiche.js"></script>
+<script src="./ia.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
