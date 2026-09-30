@@ -104,6 +104,26 @@ function blocMiseEnAlcool(c) {
     </div>`;
 }
 
+/* Le dialogue : ce que la demande refuse de trancher (les deux bouts d'un
+   curseur) et le pas de côté que la formule s'autorise. Montré au client
+   comme au parfumeur — c'est l'idée du parfum, pas un dosage. */
+function blocDialogue(c) {
+  const tensions = c.tensions || [];
+  if (!tensions.length && !c.pasDeCote) return '';
+  const paires = tensions.map((t) => `<strong>${t.gauche.toLowerCase()} et ${t.droite.toLowerCase()}</strong>`).join(', ');
+  const pas = c.pasDeCote;
+  return `
+    <div class="avertissement dialogue" style="margin-bottom:26px">
+      <h4>Le dialogue</h4>
+      ${tensions.length ? `<p style="margin:0 0 8px">Tension voulue : ${paires} à la fois — deux registres tenus
+         ensemble plutôt qu'un compromis entre les deux. La formule contient des matières des deux bords ;
+         c'est leur rencontre qui fait la signature.</p>` : ''}
+      ${pas ? `<p style="margin:0">Pas de côté : <strong>${pas.matiere.nom}</strong> — ${FACETTES[pas.opposee].toLowerCase()} —
+         glissé à faible dose dans une demande qui penche vers ${FACETTES[pas.facette].toLowerCase()}. C'est ce qui
+         empêche la formule d'être littérale. À écarter d'une mouillette ✕ si le client n'y adhère pas.</p>` : ''}
+    </div>`;
+}
+
 function blocSolvant(c) {
   if (c.diluant <= .5) return '';
   return `
@@ -131,6 +151,8 @@ function texteFiche(c) {
     'Concentration : ' + c.concentration.nom + ' (' + c.concentration.plage + ')',
     '',
     c.intention,
+    (c.tensions || []).length ? 'Tension voulue : ' + c.tensions.map((t) => `${t.gauche.toLowerCase()} et ${t.droite.toLowerCase()}`).join(', ') + ' à la fois.' : '',
+    c.pasDeCote ? `Pas de côté : ${c.pasDeCote.matiere.nom} (${FACETTES[c.pasDeCote.opposee].toLowerCase()}), à faible dose.` : '',
     '',
     bloc('Notes de tête', c.pyramide.tete, c.equilibre.tete),
     '',
@@ -168,6 +190,10 @@ function donneesFiche(c) {
         grammes_a_peser: Number(masseAPeser(l).toFixed(3))
       }))),
     solvant: Number(c.diluant.toFixed(2)),
+    tensions: (c.tensions || []).map((t) => t.id),
+    pas_de_cote: c.pasDeCote
+      ? { id: c.pasDeCote.matiere.id, nom: c.pasDeCote.matiere.nom, facette: c.pasDeCote.facette, opposee: c.pasDeCote.opposee }
+      : null,
     familles: c.familles.map((f) => ({ nom: f.nom, pourcentage: Number(f.pct.toFixed(1)) })),
     vigilance: c.alertes
   };

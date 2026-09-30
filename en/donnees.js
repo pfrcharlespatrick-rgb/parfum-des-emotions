@@ -16,6 +16,7 @@ const FACETTES = {
   aromatique:   'Aromatic',
   aldehyde:     'Aldehydic',
   aquatique:    'Aquatic / ozonic',
+  aerien:       'Airy / mineral',
   floral_blanc: 'White floral',
   floral_poudre:'Powdery floral',
   rose:         'Rosy',
@@ -86,7 +87,7 @@ const EMOTIONS = [
   {
     id: 'liberte', nom: 'Freedom', icone: '🌬️',
     phrase: 'The open air, the open road, nothing holding you back.',
-    poids: { aquatique: .9, vert: .7, agrumes: .6, aromatique: .5, musc: .3 }
+    poids: { aquatique: .9, vert: .7, agrumes: .6, aromatique: .5, aerien: .5, musc: .3 }
   },
   {
     id: 'mystere', nom: 'Mystery', icone: '🌑',
@@ -106,7 +107,7 @@ const EMOTIONS = [
   {
     id: 'purete', nom: 'Purity / renewal', icone: '🌱',
     phrase: 'Starting clean. Linen, rain, a blank page.',
-    poids: { musc: .8, vert: .7, aquatique: .6, aldehyde: .5, floral_blanc: .4 }
+    poids: { musc: .8, vert: .7, aquatique: .6, aldehyde: .5, floral_blanc: .4, aerien: .3 }
   },
   {
     id: 'opulence', nom: 'Opulence', icone: '👑',
@@ -122,6 +123,11 @@ const EMOTIONS = [
     id: 'insouciance', nom: 'Lightheartedness', icone: '🍑',
     phrase: 'Childhood, holidays, thinking of nothing at all.',
     poids: { fruite: .9, gourmand: .6, agrumes: .5, floral_blanc: .4, vanille: .4 }
+  },
+  {
+    id: 'immensite', nom: 'Vastness', icone: '🏔️',
+    phrase: 'The steppe, the clarity of the air, feet on the earth and head in the clouds.',
+    poids: { aerien: 1, mousse_terre: .5, aquatique: .3, bois_sec: .3, musc: .3, vert: .2 }
   }
 ];
 
@@ -150,6 +156,7 @@ const LEXIQUE = [
   { mots: ['party','luxury','luxurious','evening','gala','rich','abundance','gown','dress','celebration','velvet','gold','golden','champagne','jewel','opulent','lavish'], emotions: ['opulence'] },
   { mots: ['prayer','pray','church','sacred','incense','spiritual','meditation','meditate','soul','chapel','cathedral','monastery','temple','silence','solemn'], emotions: ['recueillement'] },
   { mots: ['holiday','holidays','vacation','carefree','light-hearted','lighthearted','play','beach','summer','picnic','no worries','without a care','ice cream','childhood games'], emotions: ['insouciance'] },
+  { mots: ['vastness','vast','immense','immensity','infinite','infinity','steppe','plains','altitude','summit','peak','sky','cloud','clouds','open sky','endless','desert','dune','dunes','high up','thin air'], emotions: ['immensite'] },
 
   // Words that name a material or a facet directly
   { mots: ['citrus','lemon','orange','grapefruit','bergamot','mandarin','tangerine','zest','lime','yuzu'],            facettes: { agrumes: .9 } },
@@ -170,7 +177,8 @@ const LEXIQUE = [
   { mots: ['sandalwood','sandal','milk','cream','creamy','smooth','velvet','velvety','silky','silk'],                 facettes: { bois_cremeux: .8 } },
   { mots: ['incense','resin','myrrh','frankincense','olibanum','balm','balsam','benzoin','labdanum'],                 facettes: { resine: .9 } },
   { mots: ['amber','ambery','warm','hot','heat','solar','sun-warmed','sunbaked','sand','sunset'],                     facettes: { ambre: .8 } },
-  { mots: ['moss','mossy','earth','earthy','humus','mushroom','undergrowth','forest floor','stone','damp','soil','mud','petrichor','cellar'], facettes: { mousse_terre: .9 } },
+  { mots: ['moss','mossy','earth','earthy','humus','mushroom','undergrowth','forest floor','damp','soil','mud','petrichor','cellar'], facettes: { mousse_terre: .9 } },
+  { mots: ['mineral','stone','rock','rocks','pebble','flint','cliff','glacier','snow','frost','crisp air','thin air','fresh air','wind','breeze','sky','cloud','clouds','altitude','airy','weightless','transparent'], facettes: { aerien: .9 } },
   { mots: ['leather','jacket','saddle','tannery','boot','boots','suede'],                                             facettes: { cuir: .9 } },
   { mots: ['smoke','smoky','smokey','wood fire','bonfire','campfire','tobacco','ember','embers','tar','ash','ashes','chimney','cigar','burnt','burning'], facettes: { fume: .9 } },
   { mots: ['animal','animalic','bare skin','fur','wild','flesh','musk','musky','sweat','naked'],                      facettes: { animal: .7, musc: .6 } },
@@ -246,15 +254,15 @@ const MATIERES = [
     note:'Dry heat and sparkle at once.' },
 
   { id:'aldehyde_c11', nom:'Aldehyde C-11 undecylenic', latin:'', famille:'Aldehydes', role:'tete', nature:'synthese',
-    facettes:{ aldehyde:1, musc:.3 }, force:5, dose:[.05,.8], tags:[],
+    facettes:{ aldehyde:1, musc:.3, aerien:.4 }, force:5, dose:[.05,.8], tags:[],
     note:'The starched collar of the great classics; it glitters and keeps its distance.' },
 
   { id:'calone', nom:'Calone 1951', latin:'', famille:'Aquatic', role:'tete', nature:'synthese',
-    facettes:{ aquatique:1, fruite:.3 }, force:5, dose:[.05,1], tags:[],
+    facettes:{ aquatique:1, fruite:.3, aerien:.3 }, force:5, dose:[.05,1], tags:[],
     note:'Marine melon, sea spray — the “water” note of the nineties.' },
 
   { id:'helional', nom:'Helional', latin:'', famille:'Aquatic', role:'tete', nature:'synthese',
-    facettes:{ aquatique:.8, floral_blanc:.4, vert:.3 }, force:3, dose:[.5,4], tags:[],
+    facettes:{ aquatique:.8, floral_blanc:.4, vert:.3, aerien:.5 }, force:3, dose:[.5,4], tags:[],
     note:'Air after the rain, softer and finer than Calone.' },
 
   { id:'the_vert', nom:'Green tea (absolute)', latin:'Camellia sinensis', famille:'Tea', role:'tete', nature:'naturelle',
@@ -295,7 +303,7 @@ const MATIERES = [
     note:'The honeyed, sensual version of neroli.' },
 
   { id:'hedione', nom:'Hedione', latin:'', famille:'Floral', role:'coeur', nature:'synthese',
-    facettes:{ floral_blanc:.6, vert:.4, the:.3 }, force:1, dose:[5,30], tags:[],
+    facettes:{ floral_blanc:.6, vert:.4, the:.3, aerien:.5 }, force:1, dose:[5,30], tags:[],
     note:'Jasmine-like transparency; widens and airs the whole formula.' },
 
   { id:'ionone', nom:'Alpha-ionone (violet)', latin:'', famille:'Powdery', role:'coeur', nature:'synthese',
@@ -303,7 +311,7 @@ const MATIERES = [
     note:'Powdery, woody violet — an instant retro effect.' },
 
   { id:'iris', nom:'Orris butter', latin:'Iris pallida', famille:'Powdery', role:'coeur', nature:'naturelle',
-    facettes:{ floral_poudre:1, bois_sec:.3, mousse_terre:.3 }, force:2, dose:[.5,5], tags:['couteux','rare'],
+    facettes:{ floral_poudre:1, bois_sec:.3, mousse_terre:.3, aerien:.4 }, force:2, dose:[.5,5], tags:['couteux','rare'],
     note:'Powdery, cold, aristocratic root — the most expensive material of all.' },
 
   { id:'osmanthus', nom:'Osmanthus (absolute)', latin:'Osmanthus fragrans', famille:'Floral', role:'coeur', nature:'naturelle',
@@ -311,7 +319,7 @@ const MATIERES = [
     note:'Apricot, leather and tea — of rare elegance.' },
 
   { id:'muguet_syn', nom:'Lily of the valley accord (Florhydral / Lilyflore)', latin:'', famille:'Floral', role:'coeur', nature:'synthese',
-    facettes:{ floral_blanc:.7, vert:.6, aquatique:.3 }, force:3, dose:[.5,6], tags:[],
+    facettes:{ floral_blanc:.7, vert:.6, aquatique:.3, aerien:.3 }, force:3, dose:[.5,6], tags:[],
     note:'Lily of the valley exists only in synthesis; green, clean clarity.' },
 
   { id:'lactone_peche', nom:'Gamma-undecalactone (peach)', latin:'', famille:'Fruity', role:'coeur', nature:'synthese',
@@ -369,7 +377,7 @@ const MATIERES = [
     note:'Milk of wood; consoling, round, never aggressive.' },
 
   { id:'javanol', nom:'Javanol', latin:'', famille:'Woods', role:'fond', nature:'synthese',
-    facettes:{ bois_cremeux:1, musc:.3, vert:.2 }, force:5, dose:[.1,1.5], tags:[],
+    facettes:{ bois_cremeux:1, musc:.3, vert:.2, aerien:.2 }, force:5, dose:[.1,1.5], tags:[],
     note:'Crystalline synthetic sandalwood, formidable tenacity.' },
 
   { id:'cedre_atlas', nom:'Atlas cedar', latin:'Cedrus atlantica', famille:'Woods', role:'fond', nature:'naturelle',
@@ -377,7 +385,7 @@ const MATIERES = [
     note:'Sharpened pencil, dry attic.' },
 
   { id:'iso_e', nom:'Iso E Super', latin:'', famille:'Woods', role:'fond', nature:'synthese',
-    facettes:{ bois_sec:.8, ambre:.4, musc:.3 }, force:2, dose:[3,25], tags:[],
+    facettes:{ bois_sec:.8, ambre:.4, musc:.3, aerien:.4 }, force:2, dose:[3,25], tags:[],
     note:'Transparent woody velvet; enlarges the sillage without hardening it.' },
 
   { id:'vetiver', nom:'Haiti vetiver', latin:'Chrysopogon zizanioides', famille:'Woods', role:'fond', nature:'naturelle',
@@ -414,7 +422,7 @@ const MATIERES = [
     note:'Vanillic, balsamic resin; comfort itself.' },
 
   { id:'ambroxan', nom:'Ambroxan', latin:'', famille:'Amber', role:'fond', nature:'synthese',
-    facettes:{ ambre:1, musc:.5, bois_sec:.4 }, force:5, dose:[.5,6], tags:[],
+    facettes:{ ambre:1, musc:.5, bois_sec:.4, aerien:.5 }, force:5, dose:[.5,6], tags:[],
     note:'Mineral, salty ambergris; a “second skin” effect.' },
 
   { id:'vanille', nom:'Bourbon vanilla (absolute)', latin:'Vanilla planifolia', famille:'Gourmand', role:'fond', nature:'naturelle',
@@ -455,7 +463,7 @@ const MATIERES = [
     note:'Warm, slightly dirty animal leather — a reconstitution with no animal-derived material.' },
 
   { id:'muscone', nom:'White musks (Habanolide / Galaxolide)', latin:'', famille:'Musky', role:'fond', nature:'synthese',
-    facettes:{ musc:1, floral_poudre:.3 }, force:3, dose:[3,25], tags:[],
+    facettes:{ musc:1, floral_poudre:.3, aerien:.2 }, force:3, dose:[3,25], tags:[],
     note:'Clean skin, dry linen; the binder of almost every modern formula.' },
 
   { id:'ambrette', nom:'Ambrette seed', latin:'Abelmoschus moschatus', famille:'Musky', role:'fond', nature:'naturelle',
@@ -467,7 +475,7 @@ const MATIERES = [
     note:'Dried grass, natural coumarin, the countryside in August.' },
 
   { id:'ambre_gris_acc', nom:'Ambergris accord (Ambrettolide + Cetalox)', latin:'', famille:'Amber', role:'fond', nature:'synthese',
-    facettes:{ ambre:.8, musc:.7, aquatique:.4 }, force:4, dose:[.5,6], tags:[],
+    facettes:{ ambre:.8, musc:.7, aquatique:.4, aerien:.6 }, force:4, dose:[.5,6], tags:[],
     note:'Saline, mineral, warm-marine: skin in the sun.' },
 
   /* ---- common workshop materials, outside the classic palette ---- */
@@ -519,7 +527,7 @@ const MATIERES = [
     note:'Fresh flower and pale wood; a discreet binder, found almost everywhere.' },
 
   { id:'angelique', nom:'Angelica (root)', latin:'Angelica archangelica', famille:'Aromatic', role:'coeur', nature:'naturelle',
-    facettes:{ vert:.6, aromatique:.6, mousse_terre:.5, epice_frais:.4 }, force:4, dose:[.1,1], tags:['couteux','rare'],
+    facettes:{ vert:.6, aromatique:.6, mousse_terre:.5, epice_frais:.4, aerien:.3 }, force:4, dose:[.1,1], tags:['couteux','rare'],
     note:'Cold, musky, earthy root — strange and thoroughbred.',
     prudence:'Photosensitising.' },
 
@@ -537,7 +545,7 @@ const MATIERES = [
     note:'Lime-tree flower and a lukewarm infusion — a village summer.' },
 
   { id:'lotus', nom:'Lotus', latin:'Nelumbo nucifera', famille:'Floral', role:'coeur', nature:'synthese',
-    facettes:{ floral_blanc:.6, aquatique:.5, the:.4, floral_poudre:.3 }, force:3, dose:[.3,3], tags:[],
+    facettes:{ floral_blanc:.6, aquatique:.5, the:.4, floral_poudre:.3, aerien:.3 }, force:3, dose:[.3,3], tags:[],
     note:'A water flower, fresh and powdery at once.' },
 
   { id:'jasmin_grandiflorum', nom:'Jasmine grandiflorum (absolute)', latin:'Jasminum grandiflorum', famille:'White floral', role:'coeur', nature:'naturelle',
@@ -558,7 +566,11 @@ const MATIERES = [
 
   { id:'curcuma', nom:'Turmeric', latin:'Curcuma longa', famille:'Spices', role:'coeur', nature:'naturelle',
     facettes:{ epice_chaud:.7, bois_sec:.4, vert:.3 }, force:4, dose:[.05,.5], tags:[],
-    note:'A warm, dusty root, a little medicinal.' }
+    note:'A warm, dusty root, a little medicinal.' },
+
+  { id:'silex', nom:'Flint accord (gunflint)', latin:'', famille:'Mineral', role:'fond', nature:'synthese',
+    facettes:{ aerien:1, fume:.3, mousse_terre:.3 }, force:5, dose:[.02,.3], tags:[],
+    note:'Struck stone, rock dust and dry air — what makes a wood or a vanilla airy.' }
 ];
 
 /* ------------------------------------------------------------------ */
@@ -569,7 +581,7 @@ const MATIERES = [
 
 const CURSEURS = [
   { id:'lumiere', gauche:'Dark', droite:'Luminous',
-    effet:{ agrumes:.6, aldehyde:.4, floral_blanc:.3, aquatique:.3, vert:.2,
+    effet:{ agrumes:.6, aldehyde:.4, floral_blanc:.3, aquatique:.3, aerien:.3, vert:.2,
             resine:-.4, fume:-.5, cuir:-.4, animal:-.3, mousse_terre:-.3 } },
   { id:'temperature', gauche:'Cool', droite:'Warm',
     effet:{ ambre:.7, epice_chaud:.6, vanille:.5, resine:.4, miel:.3, gourmand:.3,
@@ -581,7 +593,10 @@ const CURSEURS = [
             floral_blanc:-.1, musc:-.2 } },
   { id:'texture', gauche:'Dry', droite:'Velvety',
     effet:{ bois_cremeux:.7, floral_poudre:.6, vanille:.4, musc:.4, gourmand:.3,
-            bois_sec:-.5, vert:-.3, aldehyde:-.2 } }
+            bois_sec:-.5, vert:-.3, aldehyde:-.2 } },
+  { id:'espace', gauche:'Dense', droite:'Airy',
+    effet:{ aerien:.7, aldehyde:.3, aquatique:.2, musc:.2,
+            gourmand:-.4, ambre:-.3, animal:-.3, resine:-.2, vanille:-.2 } }
 ];
 
 /* Exclusions offered to the client (allergies, dislikes, convictions) */

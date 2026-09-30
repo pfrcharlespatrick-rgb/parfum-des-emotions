@@ -254,3 +254,18 @@ table.formule td.chiffre { text-align: right; font-variant-numeric: tabular-nums
 .langue-en-attente body { visibility: hidden; }
 
 @media print { .langues { display: none !important; } }
+
+/* --- tenir les deux bouts d'un curseur, oser un pas de côté --- */
+
+.curseur .legende { align-items: center; gap: 10px; }
+button.tension {
+  border: 1px solid var(--ligne); background: #fff; color: var(--encre-doux); border-radius: 14px;
+  font-family: system-ui, sans-serif; font-size: 12px; padding: 2px 10px; cursor: pointer; line-height: 1.5;
+}
+button.tension:hover { border-color: var(--or); color: var(--or); }
+button.tension[aria-pressed="true"] { background: var(--or); border-color: var(--or); color: #fff; }
+.curseur.tendu input[type="range"] { opacity: .35; }
+.salon button.tension { font-size: 14px; padding: 6px 14px; min-height: 36px; }
+label.option { display: flex; align-items: flex-start; gap: 9px; margin-top: 8px; font-size: 15px; }
+label.option input { margin-top: 5px; flex-shrink: 0; }
+.avertissement.dialogue { background: #f4f2f8; border-color: #d9d3e6; }

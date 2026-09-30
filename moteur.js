@@ -67,8 +67,16 @@ function vecteurCible(etat) {
   // Facettes déduites par l'assistant (lecture fine du récit) — voir ia.js
   if (etat.facettesIA) ajouter(v, etat.facettesIA, .8);
 
-  // Curseurs
+  // Curseurs — et les tensions : un curseur « tenu par les deux bouts » ne
+  // tranche pas, il pousse ses deux pôles à la fois (frais ET chaud), pour
+  // que la formule fasse dialoguer deux registres au lieu de les moyenner.
   for (const c of CURSEURS) {
+    if ((etat.tensions || []).includes(c.id)) {
+      const deuxBouts = {};
+      for (const [f, p] of Object.entries(c.effet)) deuxBouts[f] = Math.abs(p);
+      ajouter(v, deuxBouts, .55);
+      continue;
+    }
     const val = etat.curseurs[c.id] || 0;
     if (val) ajouter(v, c.effet, val);
   }
@@ -187,6 +195,52 @@ function selectionner(cible, exclusions, nombres, equilibre, etat = {}) {
     if (liant) retenues.push(liant);
   }
   return retenues;
+}
+
+/* --- 4 bis. Le pas de côté ---------------------------------------- */
+/* Une demande lue au pied de la lettre donne une formule littérale : du
+   gourmand pour « réconfort », des agrumes pour « joie ». Le pas de côté
+   glisse UNE matière du registre opposé à la facette qui domine la demande,
+   à faible dose — la vanille qu'on rend aérienne, la lavande qu'on adoucit.
+   C'est ce dialogue inattendu qui fait la signature ; le client peut
+   toujours l'écarter d'une mouillette. */
+
+const OPPOSES = {
+  agrumes: 'ambre', vert: 'gourmand', aromatique: 'vanille', aldehyde: 'mousse_terre',
+  aquatique: 'fume', aerien: 'gourmand', floral_blanc: 'fume', floral_poudre: 'epice_frais',
+  rose: 'cuir', fruite: 'bois_sec', the: 'miel', epice_frais: 'floral_poudre',
+  epice_chaud: 'aquatique', miel: 'aerien', gourmand: 'aerien', vanille: 'aerien',
+  bois_sec: 'fruite', bois_cremeux: 'agrumes', resine: 'agrumes', ambre: 'agrumes',
+  mousse_terre: 'aldehyde', cuir: 'rose', fume: 'floral_blanc', animal: 'aquatique', musc: 'cuir'
+};
+
+const DOSE_PAS_DE_COTE = 2;   // % du concentré, au plus : un contrepoint, pas un renversement
+
+function pasDeCote(cible, retenues, exclusions, etat = {}) {
+  const dominante = Object.entries(cible)
+    .filter(([, p]) => p > 0)
+    .sort((a, b) => b[1] - a[1])[0];
+  if (!dominante) return null;
+  const facette = dominante[0];
+  const opposee = OPPOSES[facette];
+  if (!opposee) return null;
+
+  const dejaPrises = new Set(retenues.map((n) => n.m.id));
+  const candidats = (seuil) => palette()
+    .filter((m) => !dejaPrises.has(m.id)
+      && !estExclue(m, exclusions, etat.ecartees || [])
+      && (m.facettes[opposee] || 0) >= seuil)
+    // le plus typé dans le registre opposé, mais pas le plus hostile à la demande
+    .map((m) => ({ m, affinite: (m.facettes[opposee] || 0) + .5 * scorer(m, cible) }))
+    .sort((a, b) => b.affinite - a.affinite);
+  const choix = candidats(.6)[0] || candidats(.4)[0];
+  if (!choix) return null;
+
+  // à contre-emploi, la matière reste une touche : sa fourchette est plafonnée
+  const m = choix.m;
+  const matiere = { ...m, dose: [m.dose[0], Math.min(m.dose[1], Math.max(m.dose[0], DOSE_PAS_DE_COTE))] };
+  retenues.push({ m: matiere, score: .45 });
+  return { matiere, facette, opposee };
 }
 
 /* --- 5. Répartition des pourcentages ----------------------------- */
@@ -321,7 +375,7 @@ function alertes(pyramide) {
 const OUVERTURES = {
   agrumes: 'une éclaircie zestée', vert: 'une tige fraîchement coupée',
   aromatique: 'un souffle d\'herbes sèches', aldehyde: 'un scintillement de linge repassé',
-  aquatique: 'un air d\'après la pluie', floral_blanc: 'une fleur ouverte en plein soleil',
+  aquatique: 'un air d\'après la pluie', aerien: 'un air d\'altitude', floral_blanc: 'une fleur ouverte en plein soleil',
   floral_poudre: 'un voile de poudre ancienne', rose: 'un pétale encore froid',
   fruite: 'une chair de fruit mûr', the: 'une feuille de thé infusée',
   epice_frais: 'une épice claire et piquante', epice_chaud: 'une épice sombre et sucrée',
@@ -342,7 +396,7 @@ function facetteDominante(lignes, dejaVues) {
   return (neuve || classees[0] || [null])[0];
 }
 
-function noteIntention(etat, profil, pyramide) {
+function noteIntention(etat, profil, pyramide, pas = null) {
   const emos = EMOTIONS.filter((e) => etat.emotions.includes(e.id));
   const deduites = analyserRecit(etat.recit).emotions
     .filter((id) => !etat.emotions.includes(id))
@@ -373,7 +427,15 @@ function noteIntention(etat, profil, pyramide) {
     ? ` La première impression appartient à ${tete.matiere.nom.toLowerCase()} ; ce qui reste sur la peau, à ${fond.matiere.nom.toLowerCase()}.`
     : '';
 
-  return debut + milieu + fin;
+  // ce que la formule refuse de trancher, et le pas de côté qu'elle s'autorise
+  const tensions = CURSEURS.filter((c) => (etat.tensions || []).includes(c.id))
+    .map((c) => `${c.gauche.toLowerCase()} et ${c.droite.toLowerCase()}`);
+  const tenue = tensions.length ? ` Il tient les deux bouts : ${tensions.join(', ')} à la fois.` : '';
+  const ecart = pas
+    ? ` Et, en pas de côté, ${pas.matiere.nom} — ${OUVERTURES[pas.opposee] || FACETTES[pas.opposee].toLowerCase()} là où on ne l'attendait pas.`
+    : '';
+
+  return debut + milieu + fin + tenue + ecart;
 }
 
 /* --- 8. Composition complète ------------------------------------- */
@@ -390,6 +452,7 @@ function composer(etat) {
 
   const equilibre = equilibrePyramide(etat);
   const retenues = selectionner(cible, etat.exclusions, nombres, equilibre, etat);
+  const pas = etat.contrepied ? pasDeCote(cible, retenues, etat.exclusions, etat) : null;
   const pyramide = repartir(retenues, equilibre);
   const profil = profilFacettes(pyramide);
   const concentration = CONCENTRATIONS.find((c) => c.id === etat.concentration) || CONCENTRATIONS[1];
@@ -411,7 +474,10 @@ function composer(etat) {
     profil,
     alertes: alertes(pyramide),
     concentration,
-    intention: noteIntention(etat, profil, pyramide),
+    intention: noteIntention(etat, profil, pyramide, pas),
+    pasDeCote: pas,
+    tensions: CURSEURS.filter((c) => (etat.tensions || []).includes(c.id))
+      .map((c) => ({ id: c.id, gauche: c.gauche, droite: c.droite })),
     emotionsRetenues: [
       ...EMOTIONS.filter((e) => etat.emotions.includes(e.id)),
       ...analyserRecit(etat.recit).emotions

@@ -32,12 +32,13 @@ forward to the single address.
 
 1. **The free-text story is read** by a lexicon (`LEXIQUE` in `donnees.js`): recognised words
    suggest emotions and sometimes evoke a facet directly (“rain” → aquatic, “wool” → nothing,
-   “tobacco” → smoky). Words are matched whole, with the usual English endings tolerated, so
+   “tobacco” → smoky, “steppe” → airy). Words are matched whole, with the usual English endings tolerated, so
    “tea” never fires on “team” nor “rain” on “train”. The client confirms with a click; nothing
    is imposed.
-2. **Emotions, sliders, season and time of day** are added into a *facet vector*: 24 olfactory
-   axes (citrus, powdery, resins, leather, musky…), positive or negative. It is the only shared
-   language between feeling and matter.
+2. **Emotions, sliders, season and time of day** are added into a *facet vector*: 25 olfactory
+   axes (citrus, powdery, resins, leather, musky, airy…), positive or negative. It is the only shared
+   language between feeling and matter. A slider “held at both ends” pushes both of its poles at
+   once instead of deciding.
 3. **Each material is scored** by dot product with that vector, softened by its specialisation:
    a very typed material is not crushed by an all-rounder.
 4. **Selection** takes the best-scored materials per tier, with two safeguards: no more than two
@@ -48,6 +49,36 @@ forward to the single address.
    back within what its materials really allow, then spread without ever leaving a material's
    dosage range. If the client's exclusions narrow the palette too much, the remainder is shown
    as **adjustment solvent** rather than disguised as overdoses.
+6. **The step aside**, when the client asks for it: one material from the register opposite to the
+   facet that dominates the request enters the formula, capped at 2%, named and explained on the sheet.
+
+## Another idea of perfumery
+
+An interview published by *Le Figaro* in September 2026 with the artistic director of the house of
+Caron served as a compass for a revision of the application. What she says about creation — a market
+“too literal, too centred on the ingredient”; perfumes that start “from a sensation, a mood, a story,
+a landscape or an intuition”; a signature born of an “unexpected dialogue” between two registers (the
+lavender and vanilla of *Pour Un Homme*) or of a material used against type (an “airy, mineral
+vanilla” born of the Kyrgyz steppes); creation as a back-and-forth, “we exchange, we adjust, we start
+again” — translates here into five gestures:
+
+- **The story opens up to landscapes and sensations.** An **airy / mineral** facet (the clarity of
+  the air, altitude, stone, salt), a **Vastness** emotion, a **Dense ↔ Airy** slider, a flint accord in
+  the demonstration palette, and the matching vocabulary in both lexicons.
+- **Holding both ends.** Under each slider, “both”: cool *and* warm, dry *and* velvety. The formula
+  then holds materials from both sides; their meeting makes the signature, where a slider left in
+  the middle would only have given a compromise.
+- **The step aside.** A checkbox (client page) or a chip (salon): the engine slips in one material
+  against type, at a low dose, and says which one and why. The client can set it aside with a ✕ on
+  the blotter; it does not come back.
+- **The dialogue, on the sheet.** A block, visible to the client as well as the perfumer, puts these
+  choices into words; the intention sentence picks them up. They travel in the share link, the JSON
+  export (`tensions`, `pas_de_cote`) and the copied text.
+- **The path of the session.** In the salon, every “Recompose with this feedback” notes what came in
+  and what went out; the sheet tells the rounds, from the first to the last.
+
+The palette's dry runs go from six to eight: “both ends” and “a step aside” are added, so that a
+house palette also proves it can make two registers talk to each other.
 
 ## The assistant (optional)
 
@@ -104,7 +135,7 @@ calculation of declarable allergens and the actual balance remain the perfumer's
 
 ## The house palette
 
-The palette shipped in `donnees.js` is a **demonstration**: about 90 classic materials, chosen so
+The palette shipped in `donnees.js` is a **demonstration**: 91 classic materials, chosen so
 that the application works from the first opening. A perfumer does not work with that — they
 work with what is on their shelves.
 
@@ -130,7 +161,7 @@ one language serves the other as it is, under the house's own names.
   **working dilution**, character, and the facets in three intensities — light, marked, dominant.
 - **Dilutions are read from pasted names**: “Alpha-ionone 10%” gives the material *Alpha-ionone*
   diluted to 10%, as on the bottle label.
-- **The status report is permanent**: at every change, the six dry runs are rerun and the
+- **The status report is permanent**: at every change, the eight dry runs are rerun and the
   palette status updates — tier without carrier, ceiling under 100%, too few families, material
   the engine could never pick.
 - **Save / export**: a `.json` backup, or a `stock.js` file ready to place at the root of the

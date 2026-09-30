@@ -5,7 +5,9 @@ const $ = (sel) => document.querySelector(sel);
 const ETAT_INITIAL = {
   recit: '',
   emotions: [],
-  curseurs: { lumiere: 0, temperature: 0, presence: 0, caractere: 0, texture: 0 },
+  curseurs: { lumiere: 0, temperature: 0, presence: 0, caractere: 0, texture: 0, espace: 0 },
+  tensions: [],       // curseurs tenus par les deux bouts (frais ET chaud)
+  contrepied: false,  // oser un pas de côté : une matière à contre-emploi, à faible dose
   saison: 'toutes',
   moment: 'indifferent',
   exclusions: [],
@@ -45,6 +47,8 @@ function construireCurseurs() {
     <div class="curseur">
       <div class="legende">
         <span data-cote="${c.id}-gauche">${c.gauche}</span>
+        <button type="button" class="tension" data-tension="${c.id}" aria-pressed="false"
+                title="Tenir les deux bouts : ${c.gauche.toLowerCase()} et ${c.droite.toLowerCase()} à la fois">les deux</button>
         <span data-cote="${c.id}-droite">${c.droite}</span>
       </div>
       <input type="range" min="-100" max="100" step="5" value="0"
@@ -55,6 +59,17 @@ function construireCurseurs() {
     const champ = ev.target.closest('[data-curseur]');
     if (!champ) return;
     etat.curseurs[champ.dataset.curseur] = Number(champ.value) / 100;
+    rafraichir();
+  });
+
+  // « les deux » : le curseur ne tranche plus, il tient ses deux pôles
+  $('#curseurs').addEventListener('click', (ev) => {
+    const bouton = ev.target.closest('[data-tension]');
+    if (!bouton) return;
+    const id = bouton.dataset.tension;
+    etat.tensions = etat.tensions.includes(id)
+      ? etat.tensions.filter((x) => x !== id)
+      : [...etat.tensions, id];
     rafraichir();
   });
 }
@@ -85,6 +100,7 @@ function brancherChamps() {
   ['saison', 'moment', 'concentration'].forEach((id) => {
     $('#' + id).addEventListener('change', (ev) => { etat[id] = ev.target.value; rafraichir(); });
   });
+  $('#contrepied').addEventListener('change', (ev) => { etat.contrepied = ev.target.checked; rafraichir(); });
 }
 
 /* ------------------------------------------------------------------ */
@@ -103,14 +119,20 @@ function refleterFormulaire() {
     c.checked = etat.exclusions.includes(c.dataset.exclusion);
   });
   ['saison', 'moment', 'concentration'].forEach((id) => { $('#' + id).value = etat[id]; });
+  $('#contrepied').checked = !!etat.contrepied;
 
-  // le côté du curseur vers lequel on penche s'allume
+  // le côté du curseur vers lequel on penche s'allume — les deux, s'il est tenu par les deux bouts
   CURSEURS.forEach((c) => {
     const v = etat.curseurs[c.id] || 0;
+    const tendu = etat.tensions.includes(c.id);
     const g = document.querySelector(`[data-cote="${c.id}-gauche"]`);
     const d = document.querySelector(`[data-cote="${c.id}-droite"]`);
-    g.classList.toggle('actif', v < -.15);
-    d.classList.toggle('actif', v > .15);
+    const champ = document.querySelector(`[data-curseur="${c.id}"]`);
+    g.classList.toggle('actif', tendu || v < -.15);
+    d.classList.toggle('actif', tendu || v > .15);
+    champ.disabled = tendu;
+    champ.closest('.curseur').classList.toggle('tendu', tendu);
+    document.querySelector(`[data-tension="${c.id}"]`).setAttribute('aria-pressed', tendu);
   });
 }
 
@@ -314,6 +336,7 @@ function renderFiche(c) {
     ${tableEtage('Notes de cœur', 'coeur', p.coeur, c.equilibre.coeur, vueParfumeur, aDesDilutions(c))}
     ${tableEtage('Notes de fond', 'fond', p.fond, c.equilibre.fond, vueParfumeur, aDesDilutions(c))}
 
+    ${blocDialogue(c)}
     ${vueParfumeur ? blocPesee(c) + blocSolvant(c) : ''}
 
     <div class="deux-colonnes">
