@@ -7,7 +7,10 @@ const $ = (sel) => document.querySelector(sel);
 const ETAT_INITIAL = {
   recit: '',
   emotions: [],
-  curseurs: { lumiere: 0, temperature: 0, presence: 0, caractere: 0, texture: 0 },
+  curseurs: { lumiere: 0, temperature: 0, presence: 0, caractere: 0, texture: 0, espace: 0 },
+  tensions: [],       // curseurs tenus par les deux bouts
+  contrepied: false,  // oser un pas de côté
+  tours: [],          // ce que chaque « Recomposer » a fait entrer et sortir
   saison: 'toutes',
   moment: 'indifferent',
   exclusions: [],
@@ -367,25 +370,53 @@ function sceneEmotions() {
 function sceneReglages() {
   $('#scene').innerHTML = `
     <h2>Réglez la matière avec lui</h2>
-    <p class="consigne">Aucune connaissance en parfumerie n'est nécessaire : c'est son instinct qui parle.</p>
+    <p class="consigne">Aucune connaissance en parfumerie n'est nécessaire : c'est son instinct qui parle.
+       S'il hésite entre les deux bouts d'un curseur, tenez les deux : c'est souvent là que naît la signature.</p>
     ${CURSEURS.map((c) => `
       <div class="curseur">
         <div class="legende">
           <span data-cote="${c.id}-gauche">${c.gauche}</span>
+          <button type="button" class="tension" data-tension="${c.id}" aria-pressed="${etat.tensions.includes(c.id)}"
+                  title="Tenir les deux bouts : ${c.gauche.toLowerCase()} et ${c.droite.toLowerCase()} à la fois">les deux</button>
           <span data-cote="${c.id}-droite">${c.droite}</span>
         </div>
         <input type="range" min="-100" max="100" step="5" value="${(etat.curseurs[c.id] || 0) * 100}"
                data-curseur="${c.id}" aria-label="${c.gauche} vers ${c.droite}">
-      </div>`).join('')}`;
+      </div>`).join('')}
+    <div class="groupe" style="margin-top:8px"><div class="chips">
+      <button type="button" class="chip" data-contrepied aria-pressed="${!!etat.contrepied}">Oser un pas de côté
+        — une matière à contre-emploi, à faible dose, qu'il pourra écarter</button>
+    </div></div>`;
 
   const refleter = () => CURSEURS.forEach((c) => {
     const v = etat.curseurs[c.id] || 0;
-    document.querySelector(`[data-cote="${c.id}-gauche"]`).classList.toggle('actif', v < -.15);
-    document.querySelector(`[data-cote="${c.id}-droite"]`).classList.toggle('actif', v > .15);
+    const tendu = etat.tensions.includes(c.id);
+    document.querySelector(`[data-cote="${c.id}-gauche"]`).classList.toggle('actif', tendu || v < -.15);
+    document.querySelector(`[data-cote="${c.id}-droite"]`).classList.toggle('actif', tendu || v > .15);
+    const champ = document.querySelector(`[data-curseur="${c.id}"]`);
+    champ.disabled = tendu;
+    champ.closest('.curseur').classList.toggle('tendu', tendu);
+    document.querySelector(`[data-tension="${c.id}"]`).setAttribute('aria-pressed', tendu);
   });
   refleter();
 
-  $('#scene').onclick = null;
+  $('#scene').onclick = (ev) => {
+    const tension = ev.target.closest('[data-tension]');
+    if (tension) {
+      const id = tension.dataset.tension;
+      etat.tensions = etat.tensions.includes(id)
+        ? etat.tensions.filter((x) => x !== id) : [...etat.tensions, id];
+      refleter();
+      sauvegarder();
+      return;
+    }
+    const chip = ev.target.closest('[data-contrepied]');
+    if (chip) {
+      etat.contrepied = !etat.contrepied;
+      chip.setAttribute('aria-pressed', etat.contrepied);
+      sauvegarder();
+    }
+  };
   $('#scene').oninput = (ev) => {
     const champ = ev.target.closest('[data-curseur]');
     if (!champ) return;
@@ -516,9 +547,25 @@ function sceneEssai() {
     sauvegarder();
   });
 
-  $('#recomposer').addEventListener('click', () => { essai = composer(etat); sceneEssai(); });
+  // « nous échangeons, nous ajustons, nous recommençons » : chaque tour laisse
+  // une trace — ce qui est entré, ce qui est sorti — que la fiche racontera.
+  const idsDe = (comp) => ['tete', 'coeur', 'fond'].flatMap((r) => comp.pyramide[r].map((l) => l.matiere.id));
+  $('#recomposer').addEventListener('click', () => {
+    const avant = idsDe(essai);
+    essai = composer(etat);
+    const apres = idsDe(essai);
+    const tours = etat.tours || [];
+    tours.push({
+      n: tours.length + 1,
+      entrees: apres.filter((id) => !avant.includes(id)),
+      sorties: avant.filter((id) => !apres.includes(id))
+    });
+    etat.tours = tours.slice(-12);
+    sauvegarder();
+    sceneEssai();
+  });
   $('#oublier-retours').addEventListener('click', () => {
-    etat.imposees = []; etat.ecartees = [];
+    etat.imposees = []; etat.ecartees = []; etat.tours = [];
     essai = composer(etat);
     sauvegarder();
     sceneEssai();
@@ -551,6 +598,7 @@ function sceneFiche() {
     ${tableEtage('Notes de tête', 'tete', p.tete, c.equilibre.tete, true, aDesDilutions(c))}
     ${tableEtage('Notes de cœur', 'coeur', p.coeur, c.equilibre.coeur, true, aDesDilutions(c))}
     ${tableEtage('Notes de fond', 'fond', p.fond, c.equilibre.fond, true, aDesDilutions(c))}
+    ${blocDialogue(c)}
     ${blocPesee(c)}
     ${blocSolvant(c)}
 
@@ -559,6 +607,15 @@ function sceneFiche() {
         <strong>Retours de la séance —</strong>
         ${etat.imposees.length ? `gardées : ${etat.imposees.map(nomMatiere).join(', ')}. ` : ''}
         ${etat.ecartees.length ? `écartées : ${etat.ecartees.map(nomMatiere).join(', ')}.` : ''}
+      </div>` : ''}
+
+    ${(etat.tours || []).length ? `
+      <div class="rappel">
+        <strong>Le chemin de la séance —</strong>
+        ${etat.tours.map((t) => `tour ${t.n} : ` + ([
+          t.entrees.length ? `entrées ${t.entrees.map(nomMatiere).join(', ')}` : '',
+          t.sorties.length ? `sorties ${t.sorties.map(nomMatiere).join(', ')}` : ''
+        ].filter(Boolean).join(' ; ') || 'formule inchangée')).join(' · ')}.
       </div>` : ''}
 
     <div class="deux-colonnes">

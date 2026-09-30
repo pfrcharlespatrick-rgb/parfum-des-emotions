@@ -143,7 +143,7 @@ function verifierPalette(liste, facettesConnues) {
 }
 
 /* --- Essais à blanc --------------------------------------------------- */
-/* Six demandes très différentes soumises au moteur : c'est la seule preuve
+/* Huit demandes très différentes soumises au moteur : c'est la seule preuve
    qu'une palette sait réellement composer. */
 
 const ESSAIS_TYPES = [
@@ -154,13 +154,16 @@ const ESSAIS_TYPES = [
   ['tendre et poudré', { emotions: ['tendresse', 'nostalgie'], curseurs: { texture: .8 } }],
   ['sans animal ni sucre', { emotions: ['force'], exclusions: ['animal', 'gourmand'] }],
   ['tout naturel', { emotions: ['serenite'], exclusions: ['synthese'] }],
-  ['une seule émotion', { emotions: ['purete'] }]
+  ['une seule émotion', { emotions: ['purete'] }],
+  ['les deux bouts', { emotions: ['joie'], tensions: ['temperature'] }],
+  ['un pas de côté', { emotions: ['reconfort'], contrepied: true }]
 ];
 
 function essayerPalette(composerFn) {
   const base = {
     recit: '', emotions: [],
-    curseurs: { lumiere: 0, temperature: 0, presence: 0, caractere: 0, texture: 0 },
+    curseurs: { lumiere: 0, temperature: 0, presence: 0, caractere: 0, texture: 0, espace: 0 },
+    tensions: [], contrepied: false, tours: [],
     saison: 'toutes', moment: 'indifferent', exclusions: [], concentration: 'edp',
     facettesIA: null, imposees: [], ecartees: []
   };

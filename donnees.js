@@ -12,6 +12,7 @@ const FACETTES = {
   aromatique:   'Aromatique',
   aldehyde:     'Aldéhydé',
   aquatique:    'Aquatique / ozonique',
+  aerien:       'Aérien / minéral',
   floral_blanc: 'Floral blanc',
   floral_poudre:'Floral poudré',
   rose:         'Rosé',
@@ -82,7 +83,7 @@ const EMOTIONS = [
   {
     id: 'liberte', nom: 'Liberté', icone: '🌬️',
     phrase: 'Le grand air, la route ouverte, rien qui retienne.',
-    poids: { aquatique: .9, vert: .7, agrumes: .6, aromatique: .5, musc: .3 }
+    poids: { aquatique: .9, vert: .7, agrumes: .6, aromatique: .5, aerien: .5, musc: .3 }
   },
   {
     id: 'mystere', nom: 'Mystère', icone: '🌑',
@@ -102,7 +103,7 @@ const EMOTIONS = [
   {
     id: 'purete', nom: 'Pureté / renouveau', icone: '🌱',
     phrase: 'Recommencer propre. Le linge, la pluie, la page blanche.',
-    poids: { musc: .8, vert: .7, aquatique: .6, aldehyde: .5, floral_blanc: .4 }
+    poids: { musc: .8, vert: .7, aquatique: .6, aldehyde: .5, floral_blanc: .4, aerien: .3 }
   },
   {
     id: 'opulence', nom: 'Opulence', icone: '👑',
@@ -118,6 +119,11 @@ const EMOTIONS = [
     id: 'insouciance', nom: 'Insouciance', icone: '🍑',
     phrase: 'L\'enfance, les vacances, ne penser à rien.',
     poids: { fruite: .9, gourmand: .6, agrumes: .5, floral_blanc: .4, vanille: .4 }
+  },
+  {
+    id: 'immensite', nom: 'Immensité', icone: '🏔️',
+    phrase: 'La steppe, la clarté de l\'air, les pieds dans la terre et la tête dans les nuages.',
+    poids: { aerien: 1, mousse_terre: .5, aquatique: .3, bois_sec: .3, musc: .3, vert: .2 }
   }
 ];
 
@@ -144,6 +150,7 @@ const LEXIQUE = [
   { mots: ['fete','luxe','soiree','gala','riche','abondance','robe','celebration'], emotions: ['opulence'] },
   { mots: ['priere','eglise','sacre','encens','spirituel','meditation','recueil','ame'], emotions: ['recueillement'] },
   { mots: ['vacances','insouciant','leger','jeu','plage','ete','pique-nique','sans souci'], emotions: ['insouciance'] },
+  { mots: ['immensite','immense','infini','steppe','plaine','altitude','sommet','ciel','nuage','air pur','clarte','vertige','grand espace','desert','dune'], emotions: ['immensite'] },
 
   // Mots qui désignent directement une matière ou une facette
   { mots: ['agrume','citron','orange','pamplemousse','bergamote','mandarine','zeste'], facettes: { agrumes: .9 } },
@@ -164,7 +171,8 @@ const LEXIQUE = [
   { mots: ['santal','lait','creme','onctueux','velours','soyeux'],                      facettes: { bois_cremeux: .8 } },
   { mots: ['encens','resine','myrrhe','oliban','baume','benjoin'],                      facettes: { resine: .9 } },
   { mots: ['ambre','ambree','chaud','solaire','sable'],                                 facettes: { ambre: .8 } },
-  { mots: ['mousse','terre','humus','champignon','sous-bois','pierre','humide'],        facettes: { mousse_terre: .9 } },
+  { mots: ['mousse','terre','humus','champignon','sous-bois','humide'],                 facettes: { mousse_terre: .9 } },
+  { mots: ['mineral','pierre','roche','rocher','galet','silex','falaise','glacier','neige','givre','air frais','altitude','nuage','ciel','vent','brise','souffle'], facettes: { aerien: .9 } },
   { mots: ['cuir','blouson','selle','tannerie','botte'],                                facettes: { cuir: .9 } },
   { mots: ['fumee','feu de bois','tabac','braise','goudron','cendre'],                  facettes: { fume: .9 } },
   { mots: ['animal','peau nue','fourrure','sauvage','chair','musc'],                    facettes: { animal: .7, musc: .6 } },
@@ -240,15 +248,15 @@ const MATIERES = [
     note:'Chaleur sèche et pétillante à la fois.' },
 
   { id:'aldehyde_c11', nom:'Aldéhyde C-11 undécylénique', latin:'', famille:'Aldéhydes', role:'tete', nature:'synthese',
-    facettes:{ aldehyde:1, musc:.3 }, force:5, dose:[.05,.8], tags:[],
+    facettes:{ aldehyde:1, musc:.3, aerien:.4 }, force:5, dose:[.05,.8], tags:[],
     note:'Le col empesé des grands classiques ; scintille et éloigne.' },
 
   { id:'calone', nom:'Calone 1951', latin:'', famille:'Aquatique', role:'tete', nature:'synthese',
-    facettes:{ aquatique:1, fruite:.3 }, force:5, dose:[.05,1], tags:[],
+    facettes:{ aquatique:1, fruite:.3, aerien:.3 }, force:5, dose:[.05,1], tags:[],
     note:'Melon marin, embrun — la note « eau » des années 90.' },
 
   { id:'helional', nom:'Helional', latin:'', famille:'Aquatique', role:'tete', nature:'synthese',
-    facettes:{ aquatique:.8, floral_blanc:.4, vert:.3 }, force:3, dose:[.5,4], tags:[],
+    facettes:{ aquatique:.8, floral_blanc:.4, vert:.3, aerien:.5 }, force:3, dose:[.5,4], tags:[],
     note:'Air après la pluie, plus doux et plus fin que la calone.' },
 
   { id:'the_vert', nom:'Thé vert (absolu)', latin:'Camellia sinensis', famille:'Thé', role:'tete', nature:'naturelle',
@@ -289,7 +297,7 @@ const MATIERES = [
     note:'Version miellée et sensuelle du néroli.' },
 
   { id:'hedione', nom:'Hédione', latin:'', famille:'Floral', role:'coeur', nature:'synthese',
-    facettes:{ floral_blanc:.6, vert:.4, the:.3 }, force:1, dose:[5,30], tags:[],
+    facettes:{ floral_blanc:.6, vert:.4, the:.3, aerien:.5 }, force:1, dose:[5,30], tags:[],
     note:'Transparence jasminée ; élargit et aère toute la formule.' },
 
   { id:'ionone', nom:'Ionone alpha (violette)', latin:'', famille:'Poudré', role:'coeur', nature:'synthese',
@@ -297,7 +305,7 @@ const MATIERES = [
     note:'Violette poudrée et boisée, effet rétro immédiat.' },
 
   { id:'iris', nom:'Beurre d\'iris', latin:'Iris pallida', famille:'Poudré', role:'coeur', nature:'naturelle',
-    facettes:{ floral_poudre:1, bois_sec:.3, mousse_terre:.3 }, force:2, dose:[.5,5], tags:['couteux','rare'],
+    facettes:{ floral_poudre:1, bois_sec:.3, mousse_terre:.3, aerien:.4 }, force:2, dose:[.5,5], tags:['couteux','rare'],
     note:'Racine poudrée, froide, aristocratique — la matière la plus chère.' },
 
   { id:'osmanthus', nom:'Osmanthus (absolue)', latin:'Osmanthus fragrans', famille:'Floral', role:'coeur', nature:'naturelle',
@@ -305,7 +313,7 @@ const MATIERES = [
     note:'Abricot, cuir et thé — d\'une élégance rare.' },
 
   { id:'muguet_syn', nom:'Accord muguet (Florhydral / Lilyflore)', latin:'', famille:'Floral', role:'coeur', nature:'synthese',
-    facettes:{ floral_blanc:.7, vert:.6, aquatique:.3 }, force:3, dose:[.5,6], tags:[],
+    facettes:{ floral_blanc:.7, vert:.6, aquatique:.3, aerien:.3 }, force:3, dose:[.5,6], tags:[],
     note:'Le muguet n\'existe qu\'en synthèse ; clarté verte et propre.' },
 
   { id:'lactone_peche', nom:'Gamma-undécalactone (pêche)', latin:'', famille:'Fruité', role:'coeur', nature:'synthese',
@@ -363,7 +371,7 @@ const MATIERES = [
     note:'Lait de bois ; consolant, rond, jamais agressif.' },
 
   { id:'javanol', nom:'Javanol', latin:'', famille:'Bois', role:'fond', nature:'synthese',
-    facettes:{ bois_cremeux:1, musc:.3, vert:.2 }, force:5, dose:[.1,1.5], tags:[],
+    facettes:{ bois_cremeux:1, musc:.3, vert:.2, aerien:.2 }, force:5, dose:[.1,1.5], tags:[],
     note:'Santal de synthèse cristallin, tenue redoutable.' },
 
   { id:'cedre_atlas', nom:'Cèdre de l\'Atlas', latin:'Cedrus atlantica', famille:'Bois', role:'fond', nature:'naturelle',
@@ -371,7 +379,7 @@ const MATIERES = [
     note:'Crayon taillé, grenier sec.' },
 
   { id:'iso_e', nom:'Iso E Super', latin:'', famille:'Bois', role:'fond', nature:'synthese',
-    facettes:{ bois_sec:.8, ambre:.4, musc:.3 }, force:2, dose:[3,25], tags:[],
+    facettes:{ bois_sec:.8, ambre:.4, musc:.3, aerien:.4 }, force:2, dose:[3,25], tags:[],
     note:'Velours boisé transparent ; agrandit le sillage sans le durcir.' },
 
   { id:'vetiver', nom:'Vétiver Haïti', latin:'Chrysopogon zizanioides', famille:'Bois', role:'fond', nature:'naturelle',
@@ -408,7 +416,7 @@ const MATIERES = [
     note:'Résine vanillée et balsamique ; le confort même.' },
 
   { id:'ambroxan', nom:'Ambroxan', latin:'', famille:'Ambré', role:'fond', nature:'synthese',
-    facettes:{ ambre:1, musc:.5, bois_sec:.4 }, force:5, dose:[.5,6], tags:[],
+    facettes:{ ambre:1, musc:.5, bois_sec:.4, aerien:.5 }, force:5, dose:[.5,6], tags:[],
     note:'Ambre gris minéral et salé ; effet « seconde peau ».' },
 
   { id:'vanille', nom:'Vanille Bourbon (absolue)', latin:'Vanilla planifolia', famille:'Gourmand', role:'fond', nature:'naturelle',
@@ -449,7 +457,7 @@ const MATIERES = [
     note:'Cuir animal, chaud, un peu sale — reconstitution sans matière animale.' },
 
   { id:'muscone', nom:'Muscs blancs (Habanolide / Galaxolide)', latin:'', famille:'Musqué', role:'fond', nature:'synthese',
-    facettes:{ musc:1, floral_poudre:.3 }, force:3, dose:[3,25], tags:[],
+    facettes:{ musc:1, floral_poudre:.3, aerien:.2 }, force:3, dose:[3,25], tags:[],
     note:'Peau propre, linge sec ; le liant de presque toute formule moderne.' },
 
   { id:'ambrette', nom:'Graine d\'ambrette', latin:'Abelmoschus moschatus', famille:'Musqué', role:'fond', nature:'naturelle',
@@ -461,7 +469,7 @@ const MATIERES = [
     note:'Herbe séchée, coumarine naturelle, campagne d\'août.' },
 
   { id:'ambre_gris_acc', nom:'Accord ambre gris (Ambrettolide + Cétalox)', latin:'', famille:'Ambré', role:'fond', nature:'synthese',
-    facettes:{ ambre:.8, musc:.7, aquatique:.4 }, force:4, dose:[.5,6], tags:[],
+    facettes:{ ambre:.8, musc:.7, aquatique:.4, aerien:.6 }, force:4, dose:[.5,6], tags:[],
     note:'Salin, minéral, marin-chaud : la peau au soleil.' },
 
   /* ---- matières d'atelier courantes, hors palette classique ---- */
@@ -513,7 +521,7 @@ const MATIERES = [
     note:'Fleur fraîche et bois clair ; un liant discret, presque partout.' },
 
   { id:'angelique', nom:'Angélique (racine)', latin:'Angelica archangelica', famille:'Aromatique', role:'coeur', nature:'naturelle',
-    facettes:{ vert:.6, aromatique:.6, mousse_terre:.5, epice_frais:.4 }, force:4, dose:[.1,1], tags:['couteux','rare'],
+    facettes:{ vert:.6, aromatique:.6, mousse_terre:.5, epice_frais:.4, aerien:.3 }, force:4, dose:[.1,1], tags:['couteux','rare'],
     note:'Racine froide, musquée et terreuse — étrange et racée.',
     prudence:'Photosensibilisante.' },
 
@@ -531,7 +539,7 @@ const MATIERES = [
     note:'Fleur de tilleul et infusion tiède — un été de village.' },
 
   { id:'lotus', nom:'Lotus', latin:'Nelumbo nucifera', famille:'Floral', role:'coeur', nature:'synthese',
-    facettes:{ floral_blanc:.6, aquatique:.5, the:.4, floral_poudre:.3 }, force:3, dose:[.3,3], tags:[],
+    facettes:{ floral_blanc:.6, aquatique:.5, the:.4, floral_poudre:.3, aerien:.3 }, force:3, dose:[.3,3], tags:[],
     note:'Fleur d\'eau, fraîche et poudrée à la fois.' },
 
   { id:'jasmin_grandiflorum', nom:'Jasmin grandiflorum (absolue)', latin:'Jasminum grandiflorum', famille:'Floral blanc', role:'coeur', nature:'naturelle',
@@ -552,7 +560,11 @@ const MATIERES = [
 
   { id:'curcuma', nom:'Curcuma', latin:'Curcuma longa', famille:'Épices', role:'coeur', nature:'naturelle',
     facettes:{ epice_chaud:.7, bois_sec:.4, vert:.3 }, force:4, dose:[.05,.5], tags:[],
-    note:'Racine chaude et poussiéreuse, un peu médicinale.' }
+    note:'Racine chaude et poussiéreuse, un peu médicinale.' },
+
+  { id:'silex', nom:'Accord silex (pierre à fusil)', latin:'', famille:'Minéral', role:'fond', nature:'synthese',
+    facettes:{ aerien:1, fume:.3, mousse_terre:.3 }, force:5, dose:[.02,.3], tags:[],
+    note:'Pierre frappée, poussière de roche et air sec — ce qui rend un bois ou une vanille aériens.' }
 ];
 
 /* ------------------------------------------------------------------ */
@@ -563,7 +575,7 @@ const MATIERES = [
 
 const CURSEURS = [
   { id:'lumiere', gauche:'Sombre', droite:'Lumineux',
-    effet:{ agrumes:.6, aldehyde:.4, floral_blanc:.3, aquatique:.3, vert:.2,
+    effet:{ agrumes:.6, aldehyde:.4, floral_blanc:.3, aquatique:.3, aerien:.3, vert:.2,
             resine:-.4, fume:-.5, cuir:-.4, animal:-.3, mousse_terre:-.3 } },
   { id:'temperature', gauche:'Frais', droite:'Chaud',
     effet:{ ambre:.7, epice_chaud:.6, vanille:.5, resine:.4, miel:.3, gourmand:.3,
@@ -575,7 +587,10 @@ const CURSEURS = [
             floral_blanc:-.1, musc:-.2 } },
   { id:'texture', gauche:'Sec', droite:'Velouté',
     effet:{ bois_cremeux:.7, floral_poudre:.6, vanille:.4, musc:.4, gourmand:.3,
-            bois_sec:-.5, vert:-.3, aldehyde:-.2 } }
+            bois_sec:-.5, vert:-.3, aldehyde:-.2 } },
+  { id:'espace', gauche:'Dense', droite:'Aérien',
+    effet:{ aerien:.7, aldehyde:.3, aquatique:.2, musc:.2,
+            gourmand:-.4, ambre:-.3, animal:-.3, resine:-.2, vanille:-.2 } }
 ];
 
 /* Exclusions proposées au client (allergies, dégoûts, convictions) */

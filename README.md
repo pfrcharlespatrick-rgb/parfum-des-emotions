@@ -41,9 +41,10 @@ passe de l'une à l'autre (voir [Une seule adresse, deux langues](#une-seule-adr
 
 1. **Le récit libre est lu** par un lexique (`LEXIQUE`) : les mots reconnus proposent des émotions
    et évoquent parfois directement une facette (« pluie » → aquatique, « laine » → rien, « tabac »
-   → fumé). Le client confirme d'un clic ; rien n'est imposé.
-2. **Émotions, curseurs, saison et moment** sont additionnés en un *vecteur de facettes* : 24 axes
-   olfactifs (agrumes, poudré, résines, cuir, musqué…), positifs ou négatifs. C'est le seul langage
+   → fumé, « steppe » → aérien). Le client confirme d'un clic ; rien n'est imposé.
+2. **Émotions, curseurs, saison et moment** sont additionnés en un *vecteur de facettes* : 25 axes
+   olfactifs (agrumes, poudré, résines, cuir, musqué, aérien…), positifs ou négatifs. Un curseur
+   « tenu par les deux bouts » pousse ses deux pôles à la fois au lieu de trancher. C'est le seul langage
    commun entre le ressenti et la matière.
 3. **Chaque matière est notée** par produit scalaire avec ce vecteur, atténué par sa spécialisation :
    une matière très typée n'est pas écrasée par une matière passe-partout.
@@ -56,6 +57,38 @@ passe de l'une à l'autre (voir [Une seule adresse, deux langues](#une-seule-adr
    sortir de la fourchette de dosage d'une matière. Si les exclusions du client réduisent trop la
    palette, le solde est affiché comme **solvant de mise au point** au lieu d'être maquillé en
    surdosages.
+6. **Le pas de côté**, si le client l'a demandé : une matière du registre opposé à la facette qui
+   domine la demande entre dans la formule, plafonnée à 2 %, nommée et expliquée sur la fiche.
+
+## Une autre idée de la parfumerie
+
+Un entretien publié par *Le Figaro* en septembre 2026 avec la directrice artistique de la maison
+Caron a servi de boussole à une révision de l'application. Ce qu'elle y dit de la création — un
+marché « trop littéral, trop centré sur l'ingrédient » ; des parfums qui partent « d'une sensation,
+d'une humeur, d'une histoire, d'un paysage ou d'une intuition » ; la signature qui naît d'un
+« dialogue inattendu » entre deux registres (la lavande et la vanille de *Pour Un Homme*) ou d'une
+matière prise à contre-emploi (une « vanille aérienne, minérale » née des steppes du Kirghizistan) ;
+la création comme va-et-vient, « nous échangeons, nous ajustons, nous recommençons » — se traduit
+ici en cinq gestes :
+
+- **Le récit s'ouvre aux paysages et aux sensations.** Une facette **aérien / minéral** (la clarté
+  de l'air, l'altitude, la pierre, le sel), une émotion **Immensité**, un curseur **Dense ↔ Aérien**,
+  un accord silex dans la palette de démonstration, et le vocabulaire qui va avec dans les deux
+  lexiques.
+- **Tenir les deux bouts.** Sous chaque curseur, « les deux » : frais *et* chaud, sec *et* velouté.
+  La formule contient alors des matières des deux bords ; leur rencontre fait la signature, là où un
+  curseur au milieu n'aurait donné qu'un compromis.
+- **Le pas de côté.** Une case à cocher (page client) ou une pastille (salon) : le moteur glisse
+  une matière à contre-emploi, à faible dose, et dit laquelle et pourquoi. Le client peut l'écarter
+  d'une mouillette ✕ ; elle ne revient pas.
+- **Le dialogue, sur la fiche.** Un bloc, visible du client comme du parfumeur, met ces choix en
+  mots ; la phrase d'intention les reprend. Ils voyagent dans le lien de partage, l'export JSON
+  (`tensions`, `pas_de_cote`) et le texte copié.
+- **Le chemin de la séance.** Dans le salon, chaque « Recomposer avec ces retours » note ce qui est
+  entré et ce qui est sorti ; la fiche raconte les tours, du premier au dernier.
+
+Les essais à blanc de la palette passent de six à huit : « les deux bouts » et « un pas de côté »
+s'ajoutent, pour qu'une palette maison prouve aussi qu'elle sait faire dialoguer deux registres.
 
 ## L'assistant (facultatif)
 
@@ -111,7 +144,7 @@ le calcul des allergènes déclarables et l'équilibre réel restent le travail 
 
 ## La palette de la maison
 
-La palette livrée dans `donnees.js` est une **démonstration** : ~70 matières classiques, choisies
+La palette livrée dans `donnees.js` est une **démonstration** : 91 matières classiques, choisies
 pour que l'application fonctionne dès l'ouverture. Un parfumeur ne travaille pas avec ça — il
 travaille avec ce qu'il a sur ses étagères.
 
@@ -146,7 +179,7 @@ voie normale : le parfumeur n'a ni fichier à éditer ni commande à lancer.
 - **Les dilutions sont lues dans les noms collés** : « Ionone alpha 10% » donne la matière *Ionone
   alpha* diluée à 10 %, comme sur l'étiquette du flacon. La fiche rappelle ensuite la dilution à
   côté de chaque matière — c'est le flacon que le parfumeur ira chercher.
-- **Le bilan est permanent** : à chaque modification, les six essais à blanc sont relancés et
+- **Le bilan est permanent** : à chaque modification, les huit essais à blanc sont relancés et
   l'état de la palette se met à jour — étage sans porteur, plafond sous 100 %, familles trop peu
   nombreuses, matière que le moteur ne pourra jamais choisir.
 - **Sauvegarder / exporter** : un `.json` de sauvegarde, ou un fichier `stock.js` prêt à déposer
@@ -173,7 +206,7 @@ Le CSV accepte, toutes facultatives sauf `nom` : `latin`, `famille`, `role`, `na
 
 ### La vérification
 
-`outils/verifier-stock.mjs` ne se contente pas de relire les champs : il **soumet six demandes
+`outils/verifier-stock.mjs` ne se contente pas de relire les champs : il **soumet huit demandes
 contrastées au moteur** avec la palette de la maison et vérifie que chacune produit une formule
 tenable. Il signale ce qui compte vraiment en pratique :
 

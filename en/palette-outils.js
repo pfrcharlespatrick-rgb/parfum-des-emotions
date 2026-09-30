@@ -146,7 +146,7 @@ function verifierPalette(liste, facettesConnues) {
 }
 
 /* --- Dry runs --------------------------------------------------------- */
-/* Six very different requests submitted to the engine: the only proof that
+/* Eight very different requests submitted to the engine: the only proof that
    a palette can really compose. */
 
 const ESSAIS_TYPES = [
@@ -157,13 +157,16 @@ const ESSAIS_TYPES = [
   ['tender and powdery', { emotions: ['tendresse', 'nostalgie'], curseurs: { texture: .8 } }],
   ['no animalic, no sugar', { emotions: ['force'], exclusions: ['animal', 'gourmand'] }],
   ['all natural', { emotions: ['serenite'], exclusions: ['synthese'] }],
-  ['a single emotion', { emotions: ['purete'] }]
+  ['a single emotion', { emotions: ['purete'] }],
+  ['both ends', { emotions: ['joie'], tensions: ['temperature'] }],
+  ['a step aside', { emotions: ['reconfort'], contrepied: true }]
 ];
 
 function essayerPalette(composerFn) {
   const base = {
     recit: '', emotions: [],
-    curseurs: { lumiere: 0, temperature: 0, presence: 0, caractere: 0, texture: 0 },
+    curseurs: { lumiere: 0, temperature: 0, presence: 0, caractere: 0, texture: 0, espace: 0 },
+    tensions: [], contrepied: false, tours: [],
     saison: 'toutes', moment: 'indifferent', exclusions: [], concentration: 'edp',
     facettesIA: null, imposees: [], ecartees: []
   };

@@ -95,7 +95,7 @@ const IA = {
     const facettes = Object.entries(FACETTES).map(([id, nom]) => `${id} (${nom})`).join(', ');
     const emotions = EMOTIONS.map((e) => `${e.id} (${e.nom} : ${e.phrase})`).join(' ; ');
     return [
-      'Tu assistes un parfumeur. Un client raconte un souvenir, un lieu, une personne ou une émotion.',
+      'Tu assistes un parfumeur. Un client raconte une sensation, une humeur, un souvenir, un paysage, une personne ou une émotion.',
       'Ta tâche : traduire ce récit en émotions et en facettes olfactives, pour qu\'un moteur de composition',
       'puisse proposer des matières premières.',
       '',

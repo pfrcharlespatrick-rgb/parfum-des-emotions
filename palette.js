@@ -80,7 +80,7 @@ function rendreBilan() {
       ${avertissements.length ? `<ul>${avertissements.map((a) =>
         `<li class="avertissement"><strong>${a.matiere}</strong> — ${a.texte}</li>`).join('')}</ul>` : ''}
       ${essais.length ? `
-        <p class="verdict">Essais à blanc — six demandes très différentes soumises au moteur :</p>
+        <p class="verdict">Essais à blanc — huit demandes très différentes soumises au moteur :</p>
         <div class="essais">${essais.map((e) => `
           <div>
             <b>${e.nom}</b>
